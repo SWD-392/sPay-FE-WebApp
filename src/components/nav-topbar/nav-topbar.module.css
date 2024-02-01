@@ -1,0 +1,12 @@
+.display {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+/* .display:first-child,
+.display:last-child {
+  width: 20%;
+} */

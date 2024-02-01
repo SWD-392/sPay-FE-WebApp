@@ -1,0 +1,43 @@
+.searchGroup form {
+  margin-bottom: 0;
+  position: relative;
+}
+
+.searchGroup form input {
+  width: 100%;
+  margin-bottom: 0;
+  height: 40px;
+  min-height: 40px;
+  line-height: 40px;
+  background: transparent;
+  outline: none;
+  padding: 0 45px 0 20px;
+  border: none;
+  overflow: hidden;
+  border-radius: 20px !important;
+  font-size: 14px;
+  color: #999ea1;
+  border: 1px solid #8c8c8c;
+}
+
+.searchGroup form button {
+  position: absolute;
+  right: -66px;
+  color: #000000;
+  padding: 0;
+  height: 41px;
+  width: 41px;
+  top: 0;
+  border-radius: 50%;
+}
+
+.searchGroup form button svg {
+  width: 24px;
+  height: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .searchGroup {
+    /* margin-left: 15px; */
+  }
+}
