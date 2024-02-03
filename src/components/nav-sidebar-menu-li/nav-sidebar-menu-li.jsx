@@ -8,15 +8,12 @@ const NavSidebarmenuLi = () => {
       <div className={styles.sidebarItemFrame}>
         <div className={styles.navigationSidebarMenu}> */}
       <div className={styles.productsMenuItemLightB}>
-        <SidebarButton title="Dashboard" href="/dashboard" />
-        <SidebarButton
-          title="Quản lí cửa hàng"
-          href="/dashboard/store-manage"
-        />
-        <SidebarButton title="Quản lí đơn" href="/dashboard/order-manage" />
+        <SidebarButton title="Dashboard" href="/" />
+        <SidebarButton title="Quản lí cửa hàng" href="/store-manage" />
+        <SidebarButton title="Quản lí đơn" href="/order-manage" />
         <SidebarButton
           title="Quản lí gói khuyến mãi"
-          href="/dashboard/promotion-manage"
+          href="/promotion-manage"
         />
         <SidebarButton title="Đăng xuất" href="/login" />
       </div>
