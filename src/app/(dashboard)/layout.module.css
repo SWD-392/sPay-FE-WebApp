@@ -1,0 +1,25 @@
+.navSideBar {
+  background-color: #fff;
+}
+.contents {
+  display: flex;
+  flex-direction: column;
+  height: 89vh;
+}
+
+.dashBoardContainer {
+  min-width: 74vw;
+  min-height: 100%;
+}
+
+.dashBoard {
+  display: flex;
+  background-color: #f5f6fa;
+  justify-content: space-around;
+  min-height: 100%;
+  min-width: 20%;
+  padding: 10px;
+}
+
+.dashBoard * {
+}

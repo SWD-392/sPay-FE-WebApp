@@ -1,0 +1,30 @@
+.avatarcontainer {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  width: 20%;
+}
+
+.avatarTitle {
+  padding: 0;
+}
+
+.name {
+  color: #404040;
+  /* font-family: "Nunito Sans"; */
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  padding: 5px;
+}
+
+.role {
+  color: #565656;
+  /* font-family: "Nunito Sans"; */
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  padding: 5px;
+}

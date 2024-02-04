@@ -1,0 +1,161 @@
+.sInThoi {
+    position: absolute;
+    top: 0px;
+    left: 11px;
+    font-weight: 900;
+    display: inline-block;
+    width: 243px;
+    height: 35px;
+  }
+  .smartphone {
+    margin: 0;
+    height: 24px;
+    width: 24px;
+    position: relative;
+    border-radius: var(--br-11xl);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .emptyText {
+    width: 243px;
+    position: relative;
+    font-weight: 900;
+    display: inline-block;
+    flex-shrink: 0;
+    mix-blend-mode: normal;
+    white-space: nowrap;
+  }
+  .smartphoneFrame {
+    position: absolute;
+    top: 26px;
+    left: 0px;
+    border-radius: var(--br-11xl);
+    background-color: var(--color-lightgray-200);
+    width: 300px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: var(--padding-3xl) 0px var(--padding-6xl) var(--padding-5xl);
+    box-sizing: border-box;
+    gap: var(--gap-11xl);
+    color: var(--color-darkgray);
+  }
+  .vietnamNumberText {
+    align-self: stretch;
+    height: 97px;
+    position: relative;
+  }
+  .lockIcon {
+    height: 24px;
+    width: 24px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .labelText {
+    width: 100%px;
+    border: none;
+    outline: none;
+    font-weight: 900;
+    font-family: var(--font-roboto);
+    font-size: var(--font-size-base);
+    background-color: transparent;
+    height: 19px;
+    position: relative;
+    color: #000;
+    text-align: left;
+    display: inline-block;
+  }
+  .loginButtonFrame {
+    position: absolute;
+    top: 23px;
+    left: 0px;
+    border-radius: var(--br-11xl);
+    background-color: var(--color-lightgray-200);
+    width: 300px;
+    height: 71px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: var(--padding-2xl) var(--padding-5xl) var(--padding-5xl);
+    box-sizing: border-box;
+    gap: var(--gap-19xl);
+  }
+  .mtKhu {
+    position: absolute;
+    top: 0px;
+    left: 11px;
+    font-weight: 900;
+    display: inline-block;
+    width: 243px;
+    height: 35px;
+  }
+  .passwordFrame {
+    align-self: stretch;
+    height: 111px;
+    position: relative;
+    color: var(--color-lightgray-300);
+  }
+  .ngNhp {
+    width: 100%;
+    height: 4.5vh;
+    text-decoration: none;
+  }
+  .loginButton {
+    width: 169px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 0px 0px 0px var(--padding-xl);
+    box-sizing: border-box;
+  }
+  .loginButtonWrapper {
+    width: 200px;
+    border-radius: var(--br-xl);
+    background-color: var(--color-royalblue);
+    overflow: hidden;
+    display: flex;
+    margin: auto;
+    padding: var(--padding-sm) 0px 0px;
+    box-sizing: border-box;
+    font-size: var(--font-size-xl);
+    color: var(--color-white);
+  }
+
+  .loginSpan {
+    color: #fff;
+  }
+
+  .loginButtonWrapper:active {
+    background-color: #003881 !important;
+    color: fff;
+  }
+
+  .phoneInputFrame {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--gap-2xl);
+    text-align: left;
+    font-size: var(--font-size-base);
+    color: var(--color-lightgray-100);
+    font-family: var(--font-roboto);
+  }
+  
+  @media screen and (max-width: 450px) {
+    .ngNhp {
+      font-size: var(--font-size-base);
+    }
+  
+    .loginButtonWrapper {
+      width: calc(100% - 40px);
+    }
+  }
+  

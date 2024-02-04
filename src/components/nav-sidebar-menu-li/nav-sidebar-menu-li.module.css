@@ -1,0 +1,9 @@
+.brightWeb {
+  color: #4880ff;
+}
+
+.productsMenuItemLightB {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

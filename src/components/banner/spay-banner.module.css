@@ -1,0 +1,64 @@
+.s {
+    color: var(--color-paleturquoise);
+  }
+  .span {
+    color: var(--color-white);
+  }
+  .p {
+    color: var(--color-paleturquoise);
+  }
+  .ayApp {
+    color: var(--color-white);
+  }
+  .easy {
+    color: var(--color-paleturquoise);
+  }
+  .and {
+    color: var(--color-white);
+  }
+  .convenient {
+    color: var(--color-paleturquoise);
+  }
+  .blankLine,
+.sPayAppEasyAndConvenien {
+  margin: 0;
+}
+.sPayAppContainer {
+  margin: 0;
+  position: absolute;
+  top: 25%;
+  left: 25%;
+  font-size: inherit;
+  font-weight: 900;
+  font-family: inherit;
+  display: inline-block;
+  width: 476px;
+  height: 308px;
+  z-index: 1;
+}
+.sPayAppEasyAndConvenienWrapper {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background-color: var(--color-royalblue);
+  width: 720px;
+  overflow: hidden;
+}
+.qrCodeIcon {
+  position: absolute;
+  top: 350px;
+  left: 429px;
+  width: 339px;
+  height: 164px;
+  object-fit: cover;
+  z-index: 2;
+}
+.frameParent {
+  height: 1024px;
+  width: 768px;
+  position: relative;
+  min-width: 768px;
+  max-width: 100%;
+}
