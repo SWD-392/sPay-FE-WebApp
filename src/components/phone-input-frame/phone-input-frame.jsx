@@ -24,7 +24,7 @@ const PhoneInputFrame = () => {
 
       <div>
         <button className={styles.loginButtonWrapper}>
-          <Link className={styles.ngNhp} href="/dashboard">
+          <Link className={styles.ngNhp} href="/">
             <span className={styles.loginSpan}>Đăng nhập</span>
           </Link>
         </button>

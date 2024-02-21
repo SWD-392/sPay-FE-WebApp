@@ -88,7 +88,8 @@ function TableView({ storeData }) {
               <TableCell>Phone</TableCell>
               <TableCell>Category ID</TableCell>
               <TableCell>Status</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>Edit</TableCell>
+              <TableCell>Delete</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -104,36 +105,18 @@ function TableView({ storeData }) {
                 <TableCell
                   editable={editingRow === row.id && editingField === "action"}
                   onDoubleClick={() => setEditingRow(row.id, "action")}
-                  ref={buttonRef}
                 >
-                  <IconButton
-                    onClick={(event) => handleButtonClick(event, row.id)}
-                  >
-                    <MoreVertIcon />
+                  <IconButton className={styles.customIconButton}>
+                    Edit
                   </IconButton>
-                  {openMenuId === row.id && (
-                    <Menu
-                      anchorEl={buttonRef.current}
-                      open={true}
-                      onClose={handleMenuClose}
-                      anchorOrigin={{
-                        vertical: "top", // Position menu above the anchor
-                        horizontal: "right", // Position menu to the right of the anchor
-                      }}
-                      transformOrigin={{
-                        vertical: "bottom",
-                        horizontal: "left",
-                      }}
-                    >
-                      <MenuItem onClick={() => handleEditRow(row)}>
-                        Edit
-                      </MenuItem>
-
-                      <MenuItem onClick={() => handleDeleteRow(row)}>
-                        Delete
-                      </MenuItem>
-                    </Menu>
-                  )}
+                </TableCell>
+                <TableCell
+                  editable={editingRow === row.id && editingField === "action"}
+                  onDoubleClick={() => setEditingRow(row.id, "action")}
+                >
+                  <IconButton className={styles.customIconButtonDel}>
+                    Delete
+                  </IconButton>
                 </TableCell>
               </TableRow>
             ))}
