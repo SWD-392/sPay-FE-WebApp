@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
+import styles from "./table.module.css";
 import {
   Table,
   TableBody,
@@ -15,6 +16,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Popover,
 } from "@mui/material";
 // import styles from "./table.module.css";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -24,7 +26,7 @@ function TableView({ orderData }) {
   const [editingRow, setEditingRow] = useState(null); // Track currently edited row
   const [editingField, setEditingField] = useState(null); // Track edited field within row
   const [openMenuId, setOpenMenuId] = useState(null);
-  const buttonRef = React.useRef(null);
+  const buttonRefs = {};
 
   // Handle cell editing
   const handleEditChange = (rowId, field, newValue) => {
@@ -59,19 +61,6 @@ function TableView({ orderData }) {
     // Implement your mapping logic here (e.g., formatting, converting)
     // You can use value, fieldName, and any other relevant data from the row
     return value; // Replace with your mapped value
-  };
-
-  const handleMenuOpen = (rowId) => {
-    setOpenMenuId(rowId);
-  };
-
-  const handleMenuClose = () => {
-    setOpenMenuId(null);
-  };
-
-  const handleButtonClick = (event, value) => {
-    // event.stopPropagation(); // Prevent immediate closure when clicking the button itself
-    handleMenuOpen(value);
   };
 
   return (
@@ -110,36 +99,14 @@ function TableView({ orderData }) {
                     editingRow === row.OrderID && editingField === "action"
                   }
                   onDoubleClick={() => setEditingRow(row.OrderID, "action")}
-                  ref={buttonRef}
+                  // ref={buttonRefs}
                 >
                   <IconButton
-                    onClick={(event) => handleButtonClick(event, row.OrderID)}
+                    className={styles.customIconButton}
+                    ref={(el) => (buttonRefs[row.OrderID] = el)}
                   >
-                    <MoreVertIcon />
+                    Edit
                   </IconButton>
-                  {openMenuId === row.OrderID && (
-                    <Menu
-                      anchorEl={buttonRef.current}
-                      open={true}
-                      onClose={handleMenuClose}
-                      anchorOrigin={{
-                        vertical: "top", // Position menu above the anchor
-                        horizontal: "right", // Position menu to the right of the anchor
-                      }}
-                      transformOrigin={{
-                        vertical: "top",
-                        horizontal: "left",
-                      }}
-                    >
-                      <MenuItem onClick={() => handleEditRow(row)}>
-                        Edit
-                      </MenuItem>
-
-                      <MenuItem onClick={() => handleDeleteRow(row)}>
-                        Delete
-                      </MenuItem>
-                    </Menu>
-                  )}
                 </TableCell>
               </TableRow>
             ))}

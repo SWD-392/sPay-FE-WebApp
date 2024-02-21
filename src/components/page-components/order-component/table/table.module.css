@@ -1,0 +1,21 @@
+.customIconButton {
+  border-radius: 20px;
+  color: #257eff;
+  background: #bfd9ff;
+  padding: 8px 16px; /* Adjust padding as needed */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional shadow effect */
+  cursor: pointer; /* Ensure element appears clickable */
+  transition: all 0.2s ease-in-out; /* Smooth hover/click transitions */
+  font-size: 16px;
+  /* Optional hover styles */
+}
+.customIconButton:hover {
+  background: #a3c7ff; /* Adjust hover color as desired */
+  transform: scale(1.05); /* Subtle hover zoom effect */
+}
+
+/* Optional active styles */
+.customIconButton:active {
+  background: #8ca5ff; /* Adjust active color as desired */
+  transform: scale(0.95); /* Slight press indication */
+}
