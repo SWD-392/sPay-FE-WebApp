@@ -75,55 +75,52 @@ function TableView({ storeData }) {
   };
 
   return (
-    // <div className={styles.tableContainer}>
-    <Grid xs={12}>
-      <TableContainer sx={{ minWidth: 1 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              {/* Define table headers based on your data structure */}
-              <TableCell>ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Address</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>Category ID</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Edit</TableCell>
-              <TableCell>Delete</TableCell>
+    <TableContainer sx={{ minWidth: 1 }}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            {/* Define table headers based on your data structure */}
+            <TableCell>ID</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Address</TableCell>
+            <TableCell>Phone</TableCell>
+            <TableCell>Category ID</TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell>Edit</TableCell>
+            <TableCell>Delete</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {data.map((row) => (
+            <TableRow key={row.id}>
+              <TableCell>{row.id}</TableCell>
+              {/* Use map to display data in cells */}
+              <TableCell>{handleMapData(row.name, "col1")}</TableCell>
+              <TableCell>{handleMapData(row.address, "col2")}</TableCell>
+              <TableCell>{handleMapData(row.phone, "col3")}</TableCell>
+              <TableCell>{handleMapData(row.categoryID, "col4")}</TableCell>
+              <TableCell>{handleMapData(row.status, "col5")}</TableCell>
+              <TableCell
+                editable={editingRow === row.id && editingField === "action"}
+                onDoubleClick={() => setEditingRow(row.id, "action")}
+              >
+                <IconButton className={styles.customIconButton}>
+                  Edit
+                </IconButton>
+              </TableCell>
+              <TableCell
+                editable={editingRow === row.id && editingField === "action"}
+                onDoubleClick={() => setEditingRow(row.id, "action")}
+              >
+                <IconButton className={styles.customIconButtonDel}>
+                  Delete
+                </IconButton>
+              </TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell>{row.id}</TableCell>
-                {/* Use map to display data in cells */}
-                <TableCell>{handleMapData(row.name, "col1")}</TableCell>
-                <TableCell>{handleMapData(row.address, "col2")}</TableCell>
-                <TableCell>{handleMapData(row.phone, "col3")}</TableCell>
-                <TableCell>{handleMapData(row.categoryID, "col4")}</TableCell>
-                <TableCell>{handleMapData(row.status, "col5")}</TableCell>
-                <TableCell
-                  editable={editingRow === row.id && editingField === "action"}
-                  onDoubleClick={() => setEditingRow(row.id, "action")}
-                >
-                  <IconButton className={styles.customIconButton}>
-                    Edit
-                  </IconButton>
-                </TableCell>
-                <TableCell
-                  editable={editingRow === row.id && editingField === "action"}
-                  onDoubleClick={() => setEditingRow(row.id, "action")}
-                >
-                  <IconButton className={styles.customIconButtonDel}>
-                    Delete
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Grid>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }
 
