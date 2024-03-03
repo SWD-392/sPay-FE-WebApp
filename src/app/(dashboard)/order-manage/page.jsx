@@ -29,7 +29,7 @@ export default function OrderManage() {
   };
   return (
     <div>
-      <h1 className> Quản lí đơn </h1>
+      <h1> Quản lí đơn </h1>
       <TableView orderData={db} />
       <Stack spacing={2} style={{ position: "fixed", bottom: 60, right: 200 }}>
         <Pagination

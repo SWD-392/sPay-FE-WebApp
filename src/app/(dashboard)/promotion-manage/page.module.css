@@ -1,0 +1,13 @@
+.heading {
+  position: relative;
+  float: left;
+  min-width: 100%;
+}
+
+.display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}

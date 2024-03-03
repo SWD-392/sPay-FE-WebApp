@@ -13,7 +13,7 @@
 }
 
 .dashBoard {
-  display: flex;
+  /* display: flex; */
   background-color: #f5f6fa;
   justify-content: space-around;
   min-height: 100%;
