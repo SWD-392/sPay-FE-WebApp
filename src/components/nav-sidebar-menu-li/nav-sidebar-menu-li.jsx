@@ -15,6 +15,7 @@ const NavSidebarmenuLi = () => {
           title="Quản lí gói khuyến mãi"
           href="/promotion-manage"
         />
+        <SidebarButton title="Quản lí người dùng" href="/user-manage" />
         <SidebarButton title="Đăng xuất" href="/login" />
       </div>
     </>
