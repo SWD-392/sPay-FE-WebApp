@@ -6,7 +6,8 @@ const db = [
     Date: "2024-02-04T13:49:00+07:00",
     DepositID: "5555555555",
     StoreWithDrawID: "null",
-    Status: "Pending",
+    Type: 1,
+    Status: 1,
   },
   {
     OrderID: "0987654321",
@@ -15,7 +16,8 @@ const db = [
     Date: "2024-02-03T14:20:00+07:00",
     DepositID: "6666666666",
     StoreWithDrawID: "12345",
-    Status: "Completed",
+    Type: 2,
+    Status: 2,
   },
   {
     OrderID: "9999999999",
@@ -24,7 +26,8 @@ const db = [
     Date: "2024-02-02T11:30:00+07:00",
     DepositID: "null",
     StoreWithDrawID: "null",
-    Status: "Successful",
+    Type: 3,
+    Status: 3,
   },
   {
     OrderID: "8888888888",
@@ -33,7 +36,8 @@ const db = [
     Date: "2024-02-01T18:15:00+07:00",
     DepositID: "null",
     StoreWithDrawID: "54321",
-    Status: "Processed",
+    Type: 2,
+    Status: 1,
   },
   {
     OrderID: "7777777777",
@@ -42,7 +46,8 @@ const db = [
     Date: "2024-01-31T10:00:00+07:00",
     DepositID: "null",
     StoreWithDrawID: "null",
-    Status: "Completed",
+    Type: 1,
+    Status: 3,
   },
 ];
 

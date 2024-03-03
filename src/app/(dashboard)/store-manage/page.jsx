@@ -2,7 +2,7 @@
 
 import TableView from "@/components/page-components/store-components/table/table";
 
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import db from "../api/store/db";
 import { Pagination, Stack } from "@mui/material";
