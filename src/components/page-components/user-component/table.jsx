@@ -73,23 +73,22 @@ const UserTable = ({ data }) => {
           <TableHead>
             <TableRow>
               {/* Define table headers based on your data structure */}
-              <TableCell>Name</TableCell>
-              <TableCell>Create Date</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>Status</TableCell>
+              <TableCell>Họ và Tên</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Địa chỉ</TableCell>
               <TableCell>Edit</TableCell>
               {/* <TableCell>Delete</TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
             {data.map((row) => (
-              <TableRow key={row.id}>
+              <TableRow key={row.customerKey}>
                 {/* Use map to display data in cells */}
-                <TableCell>{handleMapData(row.name, "col1")}</TableCell>
-                <TableCell>{handleMapData(row.createDate, "col2")}</TableCell>
-                <TableCell>{handleMapData(row.phone, "col3")}</TableCell>
-                {/* <TableCell>{handleMapData(row.categoryID, "col4")}</TableCell> */}
-                <TableCell>{handleMapData(row.status, "col5")}</TableCell>
+                <TableCell>
+                  {handleMapData(row.firstName + " " + row.lastName, "col1")}
+                </TableCell>
+                <TableCell>{handleMapData(row.email, "col2")}</TableCell>
+                <TableCell>{handleMapData(row.address, "col3")}</TableCell>
                 <TableCell>
                   <IconButton
                     className={styles.customIconButton}
@@ -119,19 +118,45 @@ const UserTable = ({ data }) => {
           },
         }}
       >
-        <DialogTitle>Chỉnh sửa cửa hàng</DialogTitle>
+        <DialogTitle>Chỉnh sửa </DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             required
             margin="dense"
-            id="name"
-            name="name"
+            id="firstName"
+            name="firstName"
+            label="Họ"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={selectedData ? selectedData.firstName : ""}
+            disabled
+          />
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="lastName"
+            name="lastName"
             label="Tên"
             type="text"
             fullWidth
             variant="standard"
-            value={selectedData ? selectedData.name : ""}
+            value={selectedData ? selectedData.lastName : ""}
+            disabled
+          />
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="email"
+            name="email"
+            label="Email"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={selectedData ? selectedData.email : ""}
             disabled
           />
           <TextField
@@ -144,24 +169,11 @@ const UserTable = ({ data }) => {
             type="text"
             fullWidth
             variant="standard"
-            value={selectedData ? selectedData.createDate : ""}
-            disabled
-          />
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="phone"
-            name="phone"
-            label="Số điện thoại"
-            type="number"
-            fullWidth
-            variant="standard"
-            value={selectedData ? selectedData.phone : ""}
+            value={selectedData ? selectedData.address : ""}
             disabled
           />
 
-          <TextField
+          {/* <TextField
             autoFocus
             required
             margin="dense"
@@ -174,12 +186,12 @@ const UserTable = ({ data }) => {
             // onChange={handleChangeStatusValue}
             input={<TextField label="Text" />}
           >
-            {/* {statusMenu.map((status) => (
+            {statusMenu.map((status) => (
               <MenuItem key={status.value} value={status.value}>
                 {status.label}
               </MenuItem>
-            ))} */}
-          </TextField>
+            ))}
+          </TextField> */}
         </DialogContent>
 
         <DialogActions>
