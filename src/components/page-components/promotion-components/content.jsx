@@ -1,77 +1,79 @@
 "use client";
-
+import React from "react";
+import CardPromotion from "@/components/page-components/promotion-components/card-promotion";
+import styles from "./content.module.css";
+import { useEffect, useState } from "react";
 import {
   Button,
-  Card,
-  CardActions,
-  CardContent,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   MenuItem,
   TextField,
-  Typography,
 } from "@mui/material";
-import React, { useState } from "react";
-
-const CardPromotion = ({ promotion }) => {
+const PromotionCompo = ({ promotions }) => {
   const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [data, setData] = useState(promotion);
-  const handleEdit = (data) => {
-    setOpen(true); // Open the ButtonAdd component
-  };
 
-  const handleEditInputChange = (e) => {
-    const { name, value } = e.target;
-    setData({ ...data, [name]: value });
-  };
-
-  const statusMenu = ["Active", "In Active"];
+  const statusMenu = [
+    { value: 1, label: "Active" },
+    { value: 2, label: "In Active" },
+  ];
   const statusMapping = {
     1: "Active",
     2: "InActive",
   };
 
-  const handleChangeCateValue = (e) => {
-    setData({ ...data, status: e.target.value });
+  const [newPromotionData, setNewPromotionData] = useState({
+    name: "",
+    number: "",
+    description: "",
+    insDate: "",
+    expiryDate: "",
+    price: "",
+    discount: "",
+    status: "",
+  });
+
+  const handleAddInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewPromotionData({
+      ...newPromotionData,
+      [name]: value,
+    });
   };
 
+  //add store
+  const handleAddPromotion = async () => {
+    try {
+      console.log(newPromotionData);
+      const response = await fetch("/api/stores", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newStoreData),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to add store");
+      }
+      // Xử lý thành công, đóng dialog hoặc thực hiện các thao tác khác
+      handleClose();
+    } catch (error) {
+      console.error("Error adding store:", error);
+      // Xử lý lỗi (hiển thị thông báo lỗi, v.v.)
+    }
+  };
   return (
-    <>
-      <Card sx={{ minWidth: 250, maxWidth: 275 }}>
-        <CardContent>
-          <Typography sx={{ fontSize: 26 }} color="text.primary" gutterBottom>
-            {promotion.name}
-          </Typography>
-          <Typography variant="h5" component="div"></Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            {promotion.number}
-          </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            Chi tiết: {promotion.description}
-          </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            Ngày bắt đầu: {promotion.insDate}
-          </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            Ngày kết thúc: {promotion.expiryDate}
-          </Typography>
-          <Typography variant="body2">{promotion.Price} giá</Typography>
-          <Typography variant="body2">
-            {promotion.Discount}số tiền khuyến mãi
-          </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            Trạng thái: {promotion.status}
-          </Typography>
-        </CardContent>
-        <CardActions>
-          <Button size="small" onClick={() => handleEdit(promotion)}>
-            Tuỳ Chỉnh
-          </Button>
-        </CardActions>
-      </Card>
+    <div>
+      <Button onClick={handleOpen}> Thêm gói mới </Button>
+      <div className={styles.display}>
+        {promotions.map((promotion) => (
+          <CardPromotion key={promotion.cardKey} promotion={promotion} />
+        ))}
+      </div>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -88,7 +90,7 @@ const CardPromotion = ({ promotion }) => {
           },
         }}
       >
-        <DialogTitle>Chỉnh sửa gói khuyến mãi</DialogTitle>
+        <DialogTitle>Thêm gói khuyến mãi</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -100,8 +102,8 @@ const CardPromotion = ({ promotion }) => {
             type="text"
             fullWidth
             variant="standard"
-            value={data.name}
-            onChange={handleEditInputChange}
+            // value={promotion.Name}
+            onChange={handleAddInputChange}
           />
           <TextField
             autoFocus
@@ -113,8 +115,8 @@ const CardPromotion = ({ promotion }) => {
             type="text"
             fullWidth
             variant="standard"
-            value={data.number}
-            onChange={handleEditInputChange}
+            // value={promotion.Description}
+            onChange={handleAddInputChange}
           />
           <TextField
             autoFocus
@@ -126,8 +128,8 @@ const CardPromotion = ({ promotion }) => {
             type="text"
             fullWidth
             variant="standard"
-            value={data.description}
-            onChange={handleEditInputChange}
+            // value={promotion.Date}
+            onChange={handleAddInputChange}
           />
           <TextField
             autoFocus
@@ -139,8 +141,8 @@ const CardPromotion = ({ promotion }) => {
             type="text"
             fullWidth
             variant="standard"
-            value={data.insDate}
-            onChange={handleEditInputChange}
+            // value={promotion.Date}
+            onChange={handleAddInputChange}
           />
           <TextField
             autoFocus
@@ -149,11 +151,11 @@ const CardPromotion = ({ promotion }) => {
             id="expiryDate"
             name="expiryDate"
             label="Ngày kết thúc"
-            type="text"
+            type="number"
             fullWidth
             variant="standard"
-            value={data.expiryDate}
-            onChange={handleEditInputChange}
+            // value={promotion.Price}
+            onChange={handleAddInputChange}
           />
           <TextField
             autoFocus
@@ -165,21 +167,21 @@ const CardPromotion = ({ promotion }) => {
             type="number"
             fullWidth
             variant="standard"
-            value={data.price}
-            onChange={handleEditInputChange}
+            // value={promotion.Promotion}
+            onChange={handleAddInputChange}
           />
           <TextField
             autoFocus
             required
             margin="dense"
-            id="discount"
-            name="discount"
+            id="promo"
+            name="promo"
             label="Giá trị khuyến mãi"
             type="number"
             fullWidth
             variant="standard"
-            value={data.discount}
-            onChange={handleEditInputChange}
+            // value={promotion.Promotion}
+            onChange={handleAddInputChange}
           />
           <TextField
             autoFocus
@@ -190,12 +192,15 @@ const CardPromotion = ({ promotion }) => {
             select
             label="Trạng thái gói"
             fullWidth
-            value={data.status}
-            onChange={handleChangeCateValue}
+            // value={
+            //   promotion.status ? statusMapping[promotion.status.value] : ""
+            // }
+            input={<TextField label="Text" />}
+            onChange={handleAddInputChange}
           >
-            {statusMenu.map((status) => (
-              <MenuItem key={status} value={status}>
-                {status}
+            {statusMenu.map((category) => (
+              <MenuItem key={category.value} value={category.value}>
+                {category.label}
               </MenuItem>
             ))}
           </TextField>
@@ -203,16 +208,13 @@ const CardPromotion = ({ promotion }) => {
 
         <DialogActions>
           <Button onClick={handleClose}>Hủy</Button>
-          <Button
-            type="submit"
-            //  onClick={handleSave}
-          >
-            Chỉnh sửa
+          <Button type="submit" onClick={handleAddPromotion}>
+            Thêm gói
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </div>
   );
 };
 
-export default CardPromotion;
+export default PromotionCompo;
