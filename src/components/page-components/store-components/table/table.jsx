@@ -27,20 +27,25 @@ import {
 } from "@mui/material";
 import styles from "./table.module.css";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { set } from "react-hook-form";
 
 function TableView({ storeData }) {
+  const [data, setData] = useState(storeData);
   const [editingRow, setEditingRow] = useState(null); // Track currently edited row
   const [editingField, setEditingField] = useState(null); // Track edited field within row
   const [open, setOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
 
-  const [data, setData] = useState([storeData]);
+  console.log(data);
+  useEffect(() => {
+    setData(storeData);
+  }, [storeData]);
 
   const handleRowClick = (row) => {
     setSelectedData(row); // Store the selected row data
     setEditMode(true);
     setOpen(true); // Open the ButtonAdd component
-    console.log(selectedData);
+    // console.log(selectedData);
   };
   const handleAddClick = () => {
     setSelectedData({}); // Clear selected data for adding a new store
@@ -48,16 +53,12 @@ function TableView({ storeData }) {
     setOpen(true); // Open the dialog
   };
 
-  useEffect(() => {
-    setData(storeData); // Update data state whenever storeData changes
-  }, [storeData]);
-
   //add store
   const [newStoreData, setNewStoreData] = useState({
-    name: "",
-    address: "",
-    phone: "",
-    categoryId: "",
+    storeName: "",
+    ownerName: "",
+    phoneNumber: "",
+    storeCategory: "",
     status: "",
   });
 
@@ -93,26 +94,14 @@ function TableView({ storeData }) {
   // Save changes to API (you'll need to implement your backend logic)
 
   const categoriesIdMenu = [
-    { value: 1, label: "Food" },
-    { value: 2, label: "Clothes" },
-    { value: 3, label: "Accesstory" },
+    "Food",
+    "Clothes",
+    "Accesstory",
+    "Grocery",
+    "Electronics",
   ];
-  const cateMapping = {
-    1: "Food",
-    2: "Clothes",
-    3: "Accesstory",
-  };
 
-  const statusMenu = [
-    { value: 1, label: "Ban" },
-    { value: 2, label: "Active" },
-    { value: 3, label: "InActive" },
-  ];
-  const statusMapping = {
-    1: "Ban",
-    2: "Active",
-    3: "InActive",
-  };
+  const statusMenu = ["Active", "InActive", "True"];
 
   const handleMapData = (value, fieldName) => {
     // Implement your mapping logic here (e.g., formatting, converting)
@@ -131,7 +120,7 @@ function TableView({ storeData }) {
         default:
           return value;
       }
-    } else if (fieldName === "col5") {
+    } else if (fieldName === "col6") {
       // Kiểm tra nếu là status
       switch (
         value // Ánh xạ giá trị status sang văn bản tương ứng
@@ -156,12 +145,15 @@ function TableView({ storeData }) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  console.log(selectedData);
   const handleChangeCateValue = (event) => {
     setCateValue(event.target.value);
+    setSelectedData({ ...selectedData, storeCategory: event.target.value });
   };
 
   const handleChangeStatusValue = (event) => {
     setStatusValue(event.target.value);
+    setSelectedData({ ...selectedData, status: event.target.value });
   };
 
   return (
@@ -169,31 +161,34 @@ function TableView({ storeData }) {
       <Button onClick={handleAddClick} variant="text">
         Thêm cửa hàng
       </Button>
+
       <TableContainer sx={{ minWidth: 1 }}>
         <Table>
           <TableHead>
             <TableRow>
               {/* Define table headers based on your data structure */}
-              <TableCell>ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Address</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>Category ID</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Edit</TableCell>
-              {/* <TableCell>Delete</TableCell> */}
+              <TableCell>Store Key</TableCell>
+              <TableCell>Tên cửa hàng</TableCell>
+              <TableCell>Chủ cửa hàng</TableCell>
+              <TableCell>Số điện thoại</TableCell>
+              <TableCell>Phân loại cửa hàng</TableCell>
+              <TableCell>Ngày tạo</TableCell>
+              <TableCell>Trạng thái</TableCell>
+              <TableCell>Chỉnh sửa</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {data.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell>{row.id}</TableCell>
-                {/* Use map to display data in cells */}
-                <TableCell>{handleMapData(row.name, "col1")}</TableCell>
-                <TableCell>{handleMapData(row.address, "col2")}</TableCell>
-                <TableCell>{handleMapData(row.phone, "col3")}</TableCell>
-                <TableCell>{handleMapData(row.categoryID, "col4")}</TableCell>
-                <TableCell>{handleMapData(row.status, "col5")}</TableCell>
+              <TableRow key={row.storeKey}>
+                <TableCell>{row.storeKey}</TableCell>
+                <TableCell>{handleMapData(row.storeName, "col1")}</TableCell>
+                <TableCell>{handleMapData(row.ownerName, "col2")}</TableCell>
+                <TableCell>{handleMapData(row.phoneNumber, "col3")}</TableCell>
+                <TableCell>
+                  {handleMapData(row.storeCategory, "col4")}
+                </TableCell>
+                <TableCell>{handleMapData(row.insDate, "col5")}</TableCell>
+                <TableCell>{handleMapData(row.status, "col6")}</TableCell>
                 <TableCell
                   editable={editingRow === row.id && editingField === "action"}
                   onDoubleClick={() => setEditingRow(row.id, "action")}
@@ -210,6 +205,7 @@ function TableView({ storeData }) {
           </TableBody>
         </Table>
       </TableContainer>
+
       {!editMode ? (
         <Dialog
           open={open}
@@ -233,34 +229,34 @@ function TableView({ storeData }) {
               autoFocus
               required
               margin="dense"
-              id="name"
-              name="name"
+              id="storeName"
+              name="storeName"
               label="Tên"
               type="text"
               fullWidth
               variant="standard"
-              value={newStoreData.name}
+              value={newStoreData.storeName}
               onChange={handleAddInputChange}
             />
             <TextField
               autoFocus
               required
               margin="dense"
-              id="address"
-              name="address"
-              label="Địa chỉ"
+              id="ownerName"
+              name="ownerName"
+              label="Chủ cửa hàng"
               type="text"
               fullWidth
               variant="standard"
-              value={newStoreData.address}
+              value={newStoreData.ownerName}
               onChange={handleAddInputChange}
             />
             <TextField
               autoFocus
               required
               margin="dense"
-              id="phone"
-              name="phone"
+              id="phoneNumber"
+              name="phoneNumber"
               label="Số điện thoại"
               type="number"
               fullWidth
@@ -272,18 +268,17 @@ function TableView({ storeData }) {
               autoFocus
               required
               margin="dense"
-              id="categoryId"
-              name="categoryId"
+              id="storeCategory"
+              name="storeCategory"
               select
               label="Chọn loại hình cửa hàng"
               fullWidth
-              value={newStoreData.categoryId}
+              value={newStoreData.storeCategory}
               onChange={handleAddInputChange}
-              input={<TextField label="Text" />}
             >
               {categoriesIdMenu.map((category) => (
-                <MenuItem key={category.value} value={category.value}>
-                  {category.label}
+                <MenuItem key={category} value={category}>
+                  {category}
                 </MenuItem>
               ))}
             </TextField>
@@ -301,8 +296,8 @@ function TableView({ storeData }) {
               input={<TextField label="Text" />}
             >
               {statusMenu.map((status) => (
-                <MenuItem key={status.value} value={status.value}>
-                  {status.label}
+                <MenuItem key={status} value={status}>
+                  {status}
                 </MenuItem>
               ))}
             </TextField>
@@ -338,54 +333,57 @@ function TableView({ storeData }) {
               autoFocus
               required
               margin="dense"
-              id="name"
-              name="name"
+              id="storeName"
+              name="storeName"
               label="Tên"
               type="text"
               fullWidth
               variant="standard"
-              value={selectedData ? selectedData.name : ""}
+              value={selectedData ? selectedData.storeName : ""}
+              disabled
             />
             <TextField
               autoFocus
               required
               margin="dense"
-              id="address"
-              name="address"
-              label="Địa chỉ"
+              id="ownerName"
+              name="ownerName"
+              label="Chủ cửa hàng"
               type="text"
               fullWidth
               variant="standard"
-              value={selectedData ? selectedData.address : ""}
+              value={selectedData ? selectedData.ownerName : ""}
+              disabled
             />
+
             <TextField
               autoFocus
               required
               margin="dense"
-              id="phone"
-              name="phone"
+              id="phoneNumber"
+              name="phoneNumber"
               label="Số điện thoại"
               type="number"
               fullWidth
               variant="standard"
-              value={selectedData ? selectedData.phone : ""}
+              value={selectedData ? selectedData.phoneNumber : ""}
+              disabled
             />
             <TextField
               autoFocus
               required
               margin="dense"
-              id="categoryID"
-              name="categoryID"
+              id="storeCategory"
+              name="storeCategory"
               select
               label="Chọn loại hình cửa hàng"
               fullWidth
-              value={cateMapping[selectedData.categoryID.value]}
+              value={selectedData ? selectedData.storeCategory : ""}
               onChange={handleChangeCateValue}
-              input={<TextField label="Text" />}
             >
               {categoriesIdMenu.map((category) => (
-                <MenuItem key={category.value} value={category.value}>
-                  {category.label}
+                <MenuItem key={category} value={category}>
+                  {category}
                 </MenuItem>
               ))}
             </TextField>
@@ -398,13 +396,12 @@ function TableView({ storeData }) {
               select
               label="Chọn status"
               fullWidth
-              value={statusMapping[selectedData.status.value]}
+              value={selectedData ? selectedData.status : ""}
               onChange={handleChangeStatusValue}
-              input={<TextField label="Text" />}
             >
               {statusMenu.map((status) => (
-                <MenuItem key={status.value} value={status.value}>
-                  {status.label}
+                <MenuItem key={status} value={status}>
+                  {status}
                 </MenuItem>
               ))}
             </TextField>

@@ -16,6 +16,7 @@
     "@mui/styled-engine-sc": "^6.0.0-alpha.13",
     "@mui/x-charts": "^6.19.1",
     "axios": "^1.6.7",
+    "dotenv": "^16.4.5",
     "json-server": "^1.0.0-alpha.23",
     "next": "14.1.0",
     "react": "^18",
