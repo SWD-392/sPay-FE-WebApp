@@ -24,10 +24,13 @@ import {
   Stack,
   Pagination,
   PaginationItem,
+  TableSortLabel,
 } from "@mui/material";
 import styles from "./table.module.css";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { set } from "react-hook-form";
+import ArrowDropUpSharpIcon from "@mui/icons-material/ArrowDropUpSharp";
+import ArrowDropDownSharpIcon from "@mui/icons-material/ArrowDropDownSharp";
 
 function TableView({ storeData }) {
   const [data, setData] = useState(storeData);
@@ -35,7 +38,10 @@ function TableView({ storeData }) {
   const [editingField, setEditingField] = useState(null); // Track edited field within row
   const [open, setOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
-
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: "ascending",
+  });
   console.log(data);
   useEffect(() => {
     setData(storeData);
@@ -101,6 +107,30 @@ function TableView({ storeData }) {
     "Electronics",
   ];
 
+  const requestSort = (key) => {
+    let direction = "ascending";
+    if (sortConfig.key === key && sortConfig.direction === "ascending") {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedData = React.useMemo(() => {
+    let sortableData = [...data];
+    if (sortConfig !== null) {
+      sortableData.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === "ascending" ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === "ascending" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableData;
+  }, [data, sortConfig]);
+
   const statusMenu = ["Active", "InActive", "True"];
 
   const handleMapData = (value, fieldName) => {
@@ -160,21 +190,142 @@ function TableView({ storeData }) {
           <TableHead>
             <TableRow>
               {/* Define table headers based on your data structure */}
-              <TableCell>Store Key</TableCell>
-              <TableCell>Tên cửa hàng</TableCell>
-              <TableCell>Chủ cửa hàng</TableCell>
-              <TableCell>Số điện thoại</TableCell>
-              <TableCell>Phân loại cửa hàng</TableCell>
-              <TableCell>Số dư (VND)</TableCell>
-              <TableCell>Ngày tạo</TableCell>
-              <TableCell>Trạng thái</TableCell>
+              {/* <TableCell>
+                <TableSortLabel
+                  active={sortConfig.key === "storeKey"}
+                  direction={sortConfig.direction}
+                  onClick={() => requestSort("storeKey")}
+                >
+                  Store Key
+                  {sortConfig.key === "storeKey" ? (
+                    sortConfig.direction === "ascending" ? (
+                      <ArrowDropUpSharpIcon />
+                    ) : (
+                      <ArrowDropDownSharpIcon />
+                    )
+                  ) : null}
+                </TableSortLabel>
+              </TableCell> */}
+
+              <TableCell>
+                <TableSortLabel
+                  active={sortConfig.key === "storeName"}
+                  direction={sortConfig.direction}
+                  onClick={() => requestSort("storeName")}
+                >
+                  Tên cửa hàng
+                  {sortConfig.key === "storeName" ? (
+                    sortConfig.direction === "ascending" ? (
+                      <ArrowDropUpSharpIcon />
+                    ) : (
+                      <ArrowDropDownSharpIcon />
+                    )
+                  ) : null}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortConfig.key === "ownerName"}
+                  direction={sortConfig.direction}
+                  onClick={() => requestSort("ownerName")}
+                >
+                  Chủ cửa hàng
+                  {sortConfig.key === "ownerName" ? (
+                    sortConfig.direction === "ascending" ? (
+                      <ArrowDropUpSharpIcon />
+                    ) : (
+                      <ArrowDropDownSharpIcon />
+                    )
+                  ) : null}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortConfig.key === "phoneNumber"}
+                  direction={sortConfig.direction}
+                  onClick={() => requestSort("phoneNumber")}
+                >
+                  Số điện thoại
+                  {sortConfig.key === "phoneNumber" ? (
+                    sortConfig.direction === "ascending" ? (
+                      <ArrowDropUpSharpIcon />
+                    ) : (
+                      <ArrowDropDownSharpIcon />
+                    )
+                  ) : null}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortConfig.key === "storeCategory"}
+                  direction={sortConfig.direction}
+                  onClick={() => requestSort("storeCategory")}
+                >
+                  Phân loại cửa hàng
+                  {sortConfig.key === "storeCategory" ? (
+                    sortConfig.direction === "ascending" ? (
+                      <ArrowDropUpSharpIcon />
+                    ) : (
+                      <ArrowDropDownSharpIcon />
+                    )
+                  ) : null}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortConfig.key === "balance"}
+                  direction={sortConfig.direction}
+                  onClick={() => requestSort("balance")}
+                >
+                  Số dư (VND)
+                  {sortConfig.key === "balance" ? (
+                    sortConfig.direction === "ascending" ? (
+                      <ArrowDropUpSharpIcon />
+                    ) : (
+                      <ArrowDropDownSharpIcon />
+                    )
+                  ) : null}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortConfig.key === "insDate"}
+                  direction={sortConfig.direction}
+                  onClick={() => requestSort("insDate")}
+                >
+                  Ngày tạo
+                  {sortConfig.key === "insDate" ? (
+                    sortConfig.direction === "ascending" ? (
+                      <ArrowDropUpSharpIcon />
+                    ) : (
+                      <ArrowDropDownSharpIcon />
+                    )
+                  ) : null}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell onClick={() => requestSort("status")}>
+                <TableSortLabel
+                  active={sortConfig.key === "status"}
+                  direction={sortConfig.direction}
+                  onClick={() => requestSort("status")}
+                >
+                  Trạng thái
+                  {sortConfig.key === "status" ? (
+                    sortConfig.direction === "ascending" ? (
+                      <ArrowDropUpSharpIcon />
+                    ) : (
+                      <ArrowDropDownSharpIcon />
+                    )
+                  ) : null}
+                </TableSortLabel>
+              </TableCell>
               <TableCell>Chỉnh sửa</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row) => (
+            {sortedData.map((row) => (
               <TableRow key={row.storeKey}>
-                <TableCell>{row.storeKey}</TableCell>
+                {/* <TableCell>{row.storeKey}</TableCell> */}
                 <TableCell>{handleMapData(row.storeName, "col1")}</TableCell>
                 <TableCell>{handleMapData(row.ownerName, "col2")}</TableCell>
                 <TableCell>{handleMapData(row.phoneNumber, "col3")}</TableCell>
