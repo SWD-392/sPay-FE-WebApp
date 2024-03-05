@@ -34,8 +34,25 @@ const CardPromotion = ({ promotion }) => {
     2: "InActive",
   };
 
-  const handleChangeCateValue = (e) => {
-    setData({ ...data, status: e.target.value });
+  const handleChangeCateValue = (event) => {
+    const value = event.target.value;
+    setData({ ...data, status: value });
+  };
+
+  const handleSave = (event) => {
+    event.preventDefault();
+    console.log(data);
+    // Call your API to save the data
+    // For example:
+    // api.saveData(data).then(response => {
+    //   if (response.ok) {
+    //     // Close the dialog
+    //     handleClose();
+    //   } else {
+    //     // Handle the error
+    //     console.error('Failed to save data');
+    //   }
+    // });
   };
 
   return (
@@ -43,27 +60,37 @@ const CardPromotion = ({ promotion }) => {
       <Card sx={{ minWidth: 250, maxWidth: 275 }}>
         <CardContent>
           <Typography sx={{ fontSize: 26 }} color="text.primary" gutterBottom>
-            {promotion.name}
+            {promotion.cardName}
           </Typography>
-          <Typography variant="h5" component="div"></Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            {promotion.number}
-          </Typography>
+          {/* <Typography variant="h5" component="div"></Typography> */}
+          <Typography sx={{ mb: 1.5 }}>{promotion.number}</Typography>
           <Typography sx={{ mb: 1.5 }} color="text.secondary">
             Chi tiết: {promotion.description}
           </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
+
+          <Typography sx={{ mb: 1.5, fontSize: 14 }}>
             Ngày bắt đầu: {promotion.insDate}
           </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
+          <Typography sx={{ mb: 1.5, fontSize: 14 }}>
             Ngày kết thúc: {promotion.expiryDate}
           </Typography>
-          <Typography variant="body2">{promotion.Price} giá</Typography>
           <Typography variant="body2">
-            {promotion.Discount}số tiền khuyến mãi
+            <Typography sx={{ mb: 1.5, fontSize: 20 }}>
+              Tên gói khuyến mãi: {promotion.packageName}
+            </Typography>
+            <Typography sx={{ mb: 1.5 }} color="text.secondary">
+              Chi tiết gói khuyến mãi: {promotion.packageDescription}
+            </Typography>
+            Giá bán gói: {promotion.price} VND
           </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            Trạng thái: {promotion.status}
+
+          <Typography variant="body2">
+            Số tiền khách dùng: {promotion.amount} VND
+          </Typography>
+
+          <Typography sx={{ mb: 1.5 }}>
+            Trạng thái:{" "}
+            {promotion.status === "Active" ? "Hoạt động" : "Tạm ngưng"}
           </Typography>
         </CardContent>
         <CardActions>
@@ -94,13 +121,13 @@ const CardPromotion = ({ promotion }) => {
             autoFocus
             required
             margin="dense"
-            id="name"
-            name="name"
+            id="cardName"
+            name="cardName"
             label="Tên gói"
             type="text"
             fullWidth
             variant="standard"
-            value={data.name}
+            value={data.cardName}
             onChange={handleEditInputChange}
           />
           <TextField
@@ -159,26 +186,52 @@ const CardPromotion = ({ promotion }) => {
             autoFocus
             required
             margin="dense"
-            id="price"
-            name="price"
-            label="Giá trị gói"
-            type="number"
+            id="packageName"
+            name="packageName"
+            label="Tên gói khuyến mãi"
+            type="text"
             fullWidth
             variant="standard"
-            value={data.price}
+            value={data.packageName}
             onChange={handleEditInputChange}
           />
           <TextField
             autoFocus
             required
             margin="dense"
-            id="discount"
-            name="discount"
-            label="Giá trị khuyến mãi"
+            id="packageDescription"
+            name="packageDescription"
+            label="Mô tả gói khuyến mãi"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={data.packageDescription}
+            onChange={handleEditInputChange}
+          />
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="amount"
+            name="amount"
+            label="Giá bán gói"
             type="number"
             fullWidth
             variant="standard"
-            value={data.discount}
+            value={data.amount}
+            onChange={handleEditInputChange}
+          />
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="price"
+            name="price"
+            label="Số tiền khách dùng"
+            type="number"
+            fullWidth
+            variant="standard"
+            value={data.price}
             onChange={handleEditInputChange}
           />
           <TextField
@@ -193,20 +246,18 @@ const CardPromotion = ({ promotion }) => {
             value={data.status}
             onChange={handleChangeCateValue}
           >
-            {statusMenu.map((status) => (
-              <MenuItem key={status} value={status}>
-                {status}
-              </MenuItem>
-            ))}
+            <MenuItem key="true" value={"Active"}>
+              Hoạt động
+            </MenuItem>
+            <MenuItem key="false" value={"DeActive"}>
+              Ngưng hoạt động
+            </MenuItem>
           </TextField>
         </DialogContent>
 
         <DialogActions>
           <Button onClick={handleClose}>Hủy</Button>
-          <Button
-            type="submit"
-            //  onClick={handleSave}
-          >
+          <Button type="submit" onClick={handleSave}>
             Chỉnh sửa
           </Button>
         </DialogActions>

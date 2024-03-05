@@ -151,7 +151,33 @@ const PromotionCompo = ({ promotions }) => {
             id="expiryDate"
             name="expiryDate"
             label="Ngày kết thúc"
-            type="number"
+            type="text"
+            fullWidth
+            variant="standard"
+            // value={promotion.Price}
+            onChange={handleAddInputChange}
+          />
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="packageName"
+            name="packageName"
+            label="Tên gói khuyến mãi"
+            type="text"
+            fullWidth
+            variant="standard"
+            // value={promotion.Price}
+            onChange={handleAddInputChange}
+          />
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="packageDescription"
+            name="packageDescription"
+            label="Mô tả gói khuyến mãi"
+            type="text"
             fullWidth
             variant="standard"
             // value={promotion.Price}
@@ -163,7 +189,7 @@ const PromotionCompo = ({ promotions }) => {
             margin="dense"
             id="price"
             name="price"
-            label="Giá trị gói"
+            label="Giá bán gói"
             type="number"
             fullWidth
             variant="standard"
@@ -176,7 +202,7 @@ const PromotionCompo = ({ promotions }) => {
             margin="dense"
             id="promo"
             name="promo"
-            label="Giá trị khuyến mãi"
+            label="Số tiền khách dùng"
             type="number"
             fullWidth
             variant="standard"
@@ -195,14 +221,14 @@ const PromotionCompo = ({ promotions }) => {
             // value={
             //   promotion.status ? statusMapping[promotion.status.value] : ""
             // }
-            input={<TextField label="Text" />}
             onChange={handleAddInputChange}
           >
-            {statusMenu.map((category) => (
-              <MenuItem key={category.value} value={category.value}>
-                {category.label}
-              </MenuItem>
-            ))}
+            <MenuItem key="true" value={"Active"}>
+              Hoạt động
+            </MenuItem>
+            <MenuItem key="false" value={"DeActive"}>
+              Ngưng hoạt động
+            </MenuItem>
           </TextField>
         </DialogContent>
 
