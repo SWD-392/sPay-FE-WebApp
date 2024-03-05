@@ -63,16 +63,15 @@ const CardPromotion = ({ promotion }) => {
             {promotion.cardName}
           </Typography>
           {/* <Typography variant="h5" component="div"></Typography> */}
-          <Typography sx={{ mb: 1.5 }}>{promotion.number}</Typography>
           <Typography sx={{ mb: 1.5 }} color="text.secondary">
             Chi tiết: {promotion.description}
           </Typography>
 
           <Typography sx={{ mb: 1.5, fontSize: 14 }}>
-            Ngày bắt đầu: {promotion.insDate}
+            Ngày tạo gói: {promotion.insDate}
           </Typography>
           <Typography sx={{ mb: 1.5, fontSize: 14 }}>
-            Ngày kết thúc: {promotion.expiryDate}
+            Thời hạn: {promotion.dateNumber} ngày
           </Typography>
           <Typography variant="body2">
             <Typography sx={{ mb: 1.5, fontSize: 20 }}>
@@ -90,7 +89,7 @@ const CardPromotion = ({ promotion }) => {
 
           <Typography sx={{ mb: 1.5 }}>
             Trạng thái:{" "}
-            {promotion.status === "Active" ? "Hoạt động" : "Tạm ngưng"}
+            {promotion.status === "True" ? "Đang hoạt động" : "Ngưng hoạt động"}
           </Typography>
         </CardContent>
         <CardActions>
@@ -130,19 +129,7 @@ const CardPromotion = ({ promotion }) => {
             value={data.cardName}
             onChange={handleEditInputChange}
           />
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="number"
-            name="number"
-            label="Số ??"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={data.number}
-            onChange={handleEditInputChange}
-          />
+
           <TextField
             autoFocus
             required
@@ -156,30 +143,18 @@ const CardPromotion = ({ promotion }) => {
             value={data.description}
             onChange={handleEditInputChange}
           />
+
           <TextField
             autoFocus
             required
             margin="dense"
-            id="insDate"
-            name="insDate"
-            label="Ngày bắt đầu"
+            id="dateNumber"
+            name="dateNumber"
+            label="Thời hạn(ngày)"
             type="text"
             fullWidth
             variant="standard"
-            value={data.insDate}
-            onChange={handleEditInputChange}
-          />
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="expiryDate"
-            name="expiryDate"
-            label="Ngày kết thúc"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={data.expiryDate}
+            value={data.dateNumber}
             onChange={handleEditInputChange}
           />
           <TextField

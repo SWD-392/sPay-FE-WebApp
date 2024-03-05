@@ -26,16 +26,7 @@ const PromotionCompo = ({ promotions }) => {
     2: "InActive",
   };
 
-  const [newPromotionData, setNewPromotionData] = useState({
-    name: "",
-    number: "",
-    description: "",
-    insDate: "",
-    expiryDate: "",
-    price: "",
-    discount: "",
-    status: "",
-  });
+  const [newPromotionData, setNewPromotionData] = useState({});
 
   const handleAddInputChange = (e) => {
     const { name, value } = e.target;
@@ -105,19 +96,7 @@ const PromotionCompo = ({ promotions }) => {
             // value={promotion.Name}
             onChange={handleAddInputChange}
           />
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="number"
-            name="number"
-            label="Số ??"
-            type="text"
-            fullWidth
-            variant="standard"
-            // value={promotion.Description}
-            onChange={handleAddInputChange}
-          />
+
           <TextField
             autoFocus
             required
@@ -131,27 +110,15 @@ const PromotionCompo = ({ promotions }) => {
             // value={promotion.Date}
             onChange={handleAddInputChange}
           />
+
           <TextField
             autoFocus
             required
             margin="dense"
-            id="insDate"
-            name="insDate"
-            label="Ngày bắt đầu"
-            type="text"
-            fullWidth
-            variant="standard"
-            // value={promotion.Date}
-            onChange={handleAddInputChange}
-          />
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="expiryDate"
-            name="expiryDate"
-            label="Ngày kết thúc"
-            type="text"
+            id="dateNumber"
+            name="dateNumber"
+            label="Thời hạn(ngày)"
+            type="number"
             fullWidth
             variant="standard"
             // value={promotion.Price}
@@ -200,8 +167,8 @@ const PromotionCompo = ({ promotions }) => {
             autoFocus
             required
             margin="dense"
-            id="promo"
-            name="promo"
+            id="amount"
+            name="amount"
             label="Số tiền khách dùng"
             type="number"
             fullWidth
