@@ -120,19 +120,12 @@ function TableView({ storeData }) {
         default:
           return value;
       }
-    } else if (fieldName === "col6") {
+    } else if (fieldName === "col7") {
       // Kiểm tra nếu là status
-      switch (
-        value // Ánh xạ giá trị status sang văn bản tương ứng
-      ) {
-        case 1:
-          return statusMenu[0].label;
-        case 2:
-          return statusMenu[1].label;
-        case 3:
-          return statusMenu[2].label;
-        default:
-          return value;
+      if (value) {
+        return "Hoạt động";
+      } else {
+        return "Ngưng hoạt động";
       }
     }
     // If not categoryID or status, return the original value
@@ -152,8 +145,8 @@ function TableView({ storeData }) {
   };
 
   const handleChangeStatusValue = (event) => {
-    setStatusValue(event.target.value);
-    setSelectedData({ ...selectedData, status: event.target.value });
+    const value = event.target.value === "true" ? true : false;
+    setSelectedData({ ...selectedData, status: value });
   };
 
   return (
@@ -172,6 +165,7 @@ function TableView({ storeData }) {
               <TableCell>Chủ cửa hàng</TableCell>
               <TableCell>Số điện thoại</TableCell>
               <TableCell>Phân loại cửa hàng</TableCell>
+              <TableCell>Số dư (VND)</TableCell>
               <TableCell>Ngày tạo</TableCell>
               <TableCell>Trạng thái</TableCell>
               <TableCell>Chỉnh sửa</TableCell>
@@ -187,8 +181,9 @@ function TableView({ storeData }) {
                 <TableCell>
                   {handleMapData(row.storeCategory, "col4")}
                 </TableCell>
-                <TableCell>{handleMapData(row.insDate, "col5")}</TableCell>
-                <TableCell>{handleMapData(row.status, "col6")}</TableCell>
+                <TableCell>{handleMapData(row.balance, "col5")}</TableCell>
+                <TableCell>{handleMapData(row.insDate, "col6")}</TableCell>
+                <TableCell>{handleMapData(row.status, "col7")}</TableCell>
                 <TableCell
                   editable={editingRow === row.id && editingField === "action"}
                   onDoubleClick={() => setEditingRow(row.id, "action")}
@@ -293,13 +288,13 @@ function TableView({ storeData }) {
               fullWidth
               value={newStoreData.status}
               onChange={handleAddInputChange}
-              input={<TextField label="Text" />}
             >
-              {statusMenu.map((status) => (
-                <MenuItem key={status} value={status}>
-                  {status}
-                </MenuItem>
-              ))}
+              <MenuItem key="true" value={true}>
+                Hoạt động
+              </MenuItem>
+              <MenuItem key="false" value={false}>
+                Ngưng hoạt động
+              </MenuItem>
             </TextField>
           </DialogContent>
 
@@ -399,11 +394,12 @@ function TableView({ storeData }) {
               value={selectedData ? selectedData.status : ""}
               onChange={handleChangeStatusValue}
             >
-              {statusMenu.map((status) => (
-                <MenuItem key={status} value={status}>
-                  {status}
-                </MenuItem>
-              ))}
+              <MenuItem key="true" value="true">
+                Hoạt động
+              </MenuItem>
+              <MenuItem key="false" value="false">
+                Ngưng hoạt động
+              </MenuItem>
             </TextField>
           </DialogContent>
 
