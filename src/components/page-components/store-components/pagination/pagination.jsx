@@ -7,41 +7,50 @@ import { set } from "react-hook-form";
 
 const PaginationComponent = ({ stores }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [paginatedData, setPaginatedData] = useState([]);
-  const [itemsPerPage] = useState(5); // Change this as needed
-  const [totalPages, setTotalPages] = useState(0);
+  // const [paginatedData, setPaginatedData] = useState([]);
+  // const [itemsPerPage] = useState(5); // Change this as needed
+  // const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true); // add loading state
+
+  // useEffect(() => {
+  //   if (stores) {
+  //     setTotalPages(Math.ceil(stores.length / itemsPerPage));
+  //     const startIndex = (currentPage - 1) * itemsPerPage;
+  //     const endIndex = startIndex + itemsPerPage;
+  //     const paginated = stores.slice(startIndex, endIndex);
+  //     setPaginatedData(stores.slice(startIndex, endIndex));
+  //     console.log("paginated", paginated); // log paginatedData
+  //     setLoading(false); // set loading to false
+  //   }
+  // }, [stores, itemsPerPage, currentPage]);
+
+  //
 
   useEffect(() => {
     if (stores) {
-      setTotalPages(Math.ceil(stores.length / itemsPerPage));
-      const startIndex = (currentPage - 1) * itemsPerPage;
-      const endIndex = startIndex + itemsPerPage;
-      const paginated = stores.slice(startIndex, endIndex);
-      setPaginatedData(stores.slice(startIndex, endIndex));
-      console.log("paginated", paginated); // log paginatedData
-      setLoading(false); // set loading to false
+      setLoading(false);
     }
-  }, [stores, itemsPerPage, currentPage]);
+  }, [stores]);
 
-  const handlePageChange = (event, page) => {
-    setLoading(true); // set loading to true
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    setPaginatedData(stores.slice(startIndex, endIndex));
-    setCurrentPage(page);
-    setLoading(false); // set loading to false
+  const handlePageChange = (event, value) => {
+    setLoading(true);
+    setCurrentPage(value);
   };
-  if (loading) {
-    return <div>Loading...</div>; // render loading message if loading is true
-  }
+
   return (
     <div>
-      <TableView storeData={paginatedData} />
-      <Stack spacing={2} style={{ position: "fixed", bottom: 60, right: 200 }}>
+      <TableView storeData={stores.items} loading={loading} />
+      <Stack
+        spacing={2}
+        style={{
+          position: "fixed",
+          bottom: 40,
+          right: 150,
+        }}
+      >
         <Pagination
           page={currentPage}
-          count={totalPages}
+          count={stores.totalPages}
           onChange={handlePageChange}
         />
       </Stack>

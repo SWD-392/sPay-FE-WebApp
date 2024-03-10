@@ -28,14 +28,15 @@ import {
 } from "@mui/material";
 import styles from "./table.module.css";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { set } from "react-hook-form";
 import ArrowDropUpSharpIcon from "@mui/icons-material/ArrowDropUpSharp";
 import ArrowDropDownSharpIcon from "@mui/icons-material/ArrowDropDownSharp";
+import { deleteStore } from "@/app/actions";
 
 function TableView({ storeData }) {
   const [data, setData] = useState(storeData);
-  const [editingRow, setEditingRow] = useState(null); // Track currently edited row
-  const [editingField, setEditingField] = useState(null); // Track edited field within row
   const [open, setOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
   const [sortConfig, setSortConfig] = useState({
@@ -57,6 +58,10 @@ function TableView({ storeData }) {
     setSelectedData({}); // Clear selected data for adding a new store
     setEditMode(false); // Set edit mode to add a new store
     setOpen(true); // Open the dialog
+  };
+
+  const handleDelete = async (id) => {
+    await deleteStore(id);
   };
 
   //add store
@@ -105,7 +110,20 @@ function TableView({ storeData }) {
     "Accesstory",
     "Grocery",
     "Electronics",
+    "Ẩm thực",
+    "Đồ gia dụng",
   ];
+
+  const StatusEnum = {
+    Active: { value: 1, description: "Đang hoạt động" },
+    Banned: { value: 2, description: "Bị Khoá" },
+    Deleted: { value: 3, description: "Đã bị xoá" },
+  };
+
+  const statusArray = Object.keys(StatusEnum).map((key) => ({
+    key,
+    ...StatusEnum[key],
+  }));
 
   const requestSort = (key) => {
     let direction = "ascending";
@@ -152,10 +170,12 @@ function TableView({ storeData }) {
       }
     } else if (fieldName === "col7") {
       // Kiểm tra nếu là status
-      if (value) {
-        return "Hoạt động";
-      } else {
-        return "Ngưng hoạt động";
+      if (value === 1) {
+        return "Đang Hoạt động";
+      } else if (value === 2) {
+        return "Bị khoá";
+      } else if (value === 3) {
+        return "Đã bị xóa";
       }
     }
     // If not categoryID or status, return the original value
@@ -185,28 +205,10 @@ function TableView({ storeData }) {
         Thêm cửa hàng
       </Button>
 
-      <TableContainer sx={{ minWidth: 1 }}>
+      <TableContainer sx={{ minWidth: 1, height: "70vh" }}>
         <Table>
-          <TableHead>
+          <TableHead stickyHeader>
             <TableRow>
-              {/* Define table headers based on your data structure */}
-              {/* <TableCell>
-                <TableSortLabel
-                  active={sortConfig.key === "storeKey"}
-                  direction={sortConfig.direction}
-                  onClick={() => requestSort("storeKey")}
-                >
-                  Store Key
-                  {sortConfig.key === "storeKey" ? (
-                    sortConfig.direction === "ascending" ? (
-                      <ArrowDropUpSharpIcon />
-                    ) : (
-                      <ArrowDropDownSharpIcon />
-                    )
-                  ) : null}
-                </TableSortLabel>
-              </TableCell> */}
-
               <TableCell>
                 <TableSortLabel
                   active={sortConfig.key === "storeName"}
@@ -320,6 +322,7 @@ function TableView({ storeData }) {
                 </TableSortLabel>
               </TableCell>
               <TableCell>Chỉnh sửa</TableCell>
+              <TableCell>Xoá</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -335,15 +338,16 @@ function TableView({ storeData }) {
                 <TableCell>{handleMapData(row.balance, "col5")}</TableCell>
                 <TableCell>{handleMapData(row.insDate, "col6")}</TableCell>
                 <TableCell>{handleMapData(row.status, "col7")}</TableCell>
-                <TableCell
-                  editable={editingRow === row.id && editingField === "action"}
-                  onDoubleClick={() => setEditingRow(row.id, "action")}
-                >
-                  <IconButton
-                    className={styles.customIconButton}
-                    onClick={() => handleRowClick(row)}
-                  >
-                    Edit
+                {/* edit */}
+                <TableCell>
+                  <IconButton onClick={() => handleRowClick(row)}>
+                    <EditIcon />
+                  </IconButton>
+                </TableCell>
+                {/* delete */}
+                <TableCell>
+                  <IconButton onClick={() => deleteStore(row.storeKey)}>
+                    <DeleteIcon />
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -440,12 +444,11 @@ function TableView({ storeData }) {
               value={newStoreData.status}
               onChange={handleAddInputChange}
             >
-              <MenuItem key="true" value={true}>
-                Hoạt động
-              </MenuItem>
-              <MenuItem key="false" value={false}>
-                Ngưng hoạt động
-              </MenuItem>
+              {statusArray.map((status) => (
+                <MenuItem key={status.key} value={status.value}>
+                  {status.description}
+                </MenuItem>
+              ))}
             </TextField>
           </DialogContent>
 
@@ -545,12 +548,11 @@ function TableView({ storeData }) {
               value={selectedData ? selectedData.status : ""}
               onChange={handleChangeStatusValue}
             >
-              <MenuItem key="true" value="true">
-                Hoạt động
-              </MenuItem>
-              <MenuItem key="false" value="false">
-                Ngưng hoạt động
-              </MenuItem>
+              {statusArray.map((status) => (
+                <MenuItem key={status.key} value={status.value}>
+                  {status.description}
+                </MenuItem>
+              ))}
             </TextField>
           </DialogContent>
 
