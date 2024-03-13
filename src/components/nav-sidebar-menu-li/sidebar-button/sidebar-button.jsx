@@ -8,8 +8,13 @@ import { useState } from "react";
 
 const SidebarButton = ({ title, href }) => {
   const router = useRouter();
+
   const pathname = usePathname();
   const isActive = pathname === href;
+
+  // console.log("href", href);
+  // console.log("pathname", pathname);
+  // console.log("isActive", isActive);
 
   return (
     <div className={styles.buttonFrame}>

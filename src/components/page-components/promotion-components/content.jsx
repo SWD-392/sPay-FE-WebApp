@@ -15,9 +15,8 @@ import {
   TextField,
 } from "@mui/material";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import PromotionsTable from "./table";
-import { getCardType, getCardTypeID } from "@/app/actions/card-type";
-const PromotionCompo = ({ promotions, cardTypes, storeCate }) => {
+import { getCardTypeID } from "@/app/actions/card-type";
+const PromotionCompo = ({ promotions, storeCate }) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -199,10 +198,6 @@ const PromotionCompo = ({ promotions, cardTypes, storeCate }) => {
           promotions.items.map((promotion) => (
             <CardPromotion key={promotion.cardKey} promotion={promotion} />
           ))}
-      </div>
-      <div>
-        <h2>Danh sách thẻ</h2>
-        <PromotionsTable cardTypes={cardTypes} />
       </div>
 
       <Dialog

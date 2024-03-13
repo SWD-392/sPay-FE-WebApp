@@ -23,16 +23,25 @@ import {
   DialogTitle,
   DialogContent,
   Dialog,
+  TableSortLabel,
 } from "@mui/material";
 // import styles from "./table.module.css";
+
+import ArrowDropUpSharpIcon from "@mui/icons-material/ArrowDropUpSharp";
+import ArrowDropDownSharpIcon from "@mui/icons-material/ArrowDropDownSharp";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 function TableView({ orderData }) {
-  const [data, setData] = useState([orderData]);
+  const [data, setData] = useState(orderData);
   const [editingRow, setEditingRow] = useState(null); // Track currently edited row
   const [editingField, setEditingField] = useState(null); // Track edited field within row
   const [open, setOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
+
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: "ascending",
+  });
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
@@ -40,33 +49,7 @@ function TableView({ orderData }) {
   }, [orderData]);
 
   // Handle cell editing
-  const handleEditChange = (rowId, field, newValue) => {
-    setData(
-      data.map((row) =>
-        row.Order === rowId ? { ...row, [field]: newValue } : row
-      )
-    );
-  };
 
-  useEffect(() => {
-    setData(orderData); // Update data state whenever orderData changes
-  }, [orderData]);
-
-  // Save changes to API (you'll need to implement your backend logic)
-  const handleSave = async (row) => {
-    try {
-      const response = await fetch("/api/update", {
-        method: "POST",
-        body: JSON.stringify(row),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to save data");
-      }
-      // Update state with successful response (if applicable)
-    } catch (error) {
-      console.error("Error saving data:", error);
-    }
-  };
   const typeMenu = [
     { value: 1, label: "Chuyen tien" },
     { value: 2, label: "Rut tien" },
@@ -128,29 +111,29 @@ function TableView({ orderData }) {
     return value; // Replace with your mapped value
   };
 
-  const handleRowClick = (row) => {
-    const mappedRow = {
-      ...row,
-      WalletID: handleMapData(row.WalletID, "col1"),
-      Description: handleMapData(row.Description, "col2"),
-      Date: handleMapData(row.Date, "col3"),
-      DepositID: handleMapData(row.DepositID, "col4"),
-      StoreWithDrawID: handleMapData(row.StoreWithDrawID, "col5"),
-      Type: handleMapData(row.Type, "col6"),
-      Status: handleMapData(row.Status, "col7"),
-    };
-    setSelectedData(mappedRow); // Store the selected row data
-    setOpen(true); // Open the ButtonAdd component
-    console.log(selectedData);
+  const requestSort = (key) => {
+    let direction = "ascending";
+    if (sortConfig.key === key && sortConfig.direction === "ascending") {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction });
   };
 
-  const handleChangeCateValue = (event) => {
-    setCateValue(event.target.value);
-  };
-
-  const handleChangeStatusValue = (event) => {
-    setStatusValue(event.target.value);
-  };
+  const sortedData = React.useMemo(() => {
+    let sortableData = Array.isArray(data) ? [...data] : [];
+    if (sortConfig !== null) {
+      sortableData.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === "ascending" ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === "ascending" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableData;
+  }, [data, sortConfig]);
 
   return (
     <>
@@ -159,185 +142,158 @@ function TableView({ orderData }) {
           <TableHead>
             <TableRow>
               {/* Define table headers based on your data structure */}
-              <TableCell>OrderID</TableCell>
-              <TableCell>WalletID</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>DepositID</TableCell>
-              <TableCell>StoreWithDrawID</TableCell>
-              <TableCell>Type</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortConfig.key === "no"}
+                  direction={sortConfig.direction}
+                  onClick={() => requestSort("no")}
+                >
+                  No.
+                  {sortConfig.key === "no" ? (
+                    sortConfig.direction === "ascending" ? (
+                      <ArrowDropUpSharpIcon />
+                    ) : (
+                      <ArrowDropDownSharpIcon />
+                    )
+                  ) : null}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortConfig.key === "fromCustomer"}
+                  direction={sortConfig.direction}
+                  onClick={() => requestSort("fromCustomer")}
+                >
+                  Khách hàng
+                  {sortConfig.key === "fromCustomer" ? (
+                    sortConfig.direction === "ascending" ? (
+                      <ArrowDropUpSharpIcon />
+                    ) : (
+                      <ArrowDropDownSharpIcon />
+                    )
+                  ) : null}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortConfig.key === "toStore"}
+                  direction={sortConfig.direction}
+                  onClick={() => requestSort("toStore")}
+                >
+                  Cửa hàng
+                  {sortConfig.key === "toStore" ? (
+                    sortConfig.direction === "ascending" ? (
+                      <ArrowDropUpSharpIcon />
+                    ) : (
+                      <ArrowDropDownSharpIcon />
+                    )
+                  ) : null}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortConfig.key === "cardName"}
+                  direction={sortConfig.direction}
+                  onClick={() => requestSort("cardName")}
+                >
+                  Loại card sử dụng
+                  {sortConfig.key === "cardName" ? (
+                    sortConfig.direction === "ascending" ? (
+                      <ArrowDropUpSharpIcon />
+                    ) : (
+                      <ArrowDropDownSharpIcon />
+                    )
+                  ) : null}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortConfig.key === "orderDescription"}
+                  direction={sortConfig.direction}
+                  onClick={() => requestSort("orderDescription")}
+                >
+                  Nội dung đơn
+                  {sortConfig.key === "orderDescription" ? (
+                    sortConfig.direction === "ascending" ? (
+                      <ArrowDropUpSharpIcon />
+                    ) : (
+                      <ArrowDropDownSharpIcon />
+                    )
+                  ) : null}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortConfig.key === "value"}
+                  direction={sortConfig.direction}
+                  onClick={() => requestSort("value")}
+                >
+                  Số tiền
+                  {sortConfig.key === "value" ? (
+                    sortConfig.direction === "ascending" ? (
+                      <ArrowDropUpSharpIcon />
+                    ) : (
+                      <ArrowDropDownSharpIcon />
+                    )
+                  ) : null}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortConfig.key === "date"}
+                  direction={sortConfig.direction}
+                  onClick={() => requestSort("date")}
+                >
+                  Ngày giao dịch
+                  {sortConfig.key === "date" ? (
+                    sortConfig.direction === "ascending" ? (
+                      <ArrowDropUpSharpIcon />
+                    ) : (
+                      <ArrowDropDownSharpIcon />
+                    )
+                  ) : null}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortConfig.key === "status"}
+                  direction={sortConfig.direction}
+                  onClick={() => requestSort("status")}
+                >
+                  Trạng thái
+                  {sortConfig.key === "status" ? (
+                    sortConfig.direction === "ascending" ? (
+                      <ArrowDropUpSharpIcon />
+                    ) : (
+                      <ArrowDropDownSharpIcon />
+                    )
+                  ) : null}
+                </TableSortLabel>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row) => (
-              <TableRow key={row.OrderID}>
-                <TableCell>{row.OrderID}</TableCell>
-                {/* Use map to display data in cells */}
-                <TableCell>{handleMapData(row.WalletID, "col1")}</TableCell>
-                <TableCell>{handleMapData(row.Description, "col2")}</TableCell>
-                <TableCell>{handleMapData(row.Date, "col3")}</TableCell>
-                <TableCell>{handleMapData(row.DepositID, "col4")}</TableCell>
-                <TableCell>
-                  {handleMapData(row.StoreWithDrawID, "col5")}
-                </TableCell>
-                <TableCell>{handleMapData(row.Type, "col6")}</TableCell>
-                <TableCell>{handleMapData(row.Status, "col7")}</TableCell>
-                <TableCell
-                  editable={
-                    editingRow === row.OrderID && editingField === "action"
-                  }
-                  onDoubleClick={() => setEditingRow(row.OrderID, "action")}
-                >
-                  <IconButton
-                    className={styles.customIconButton}
-                    onClick={() =>
-                      handleRowClick(handleMapData(row, "fieldName"))
-                    }
-                  >
-                    Edit
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            {data.items &&
+              data.items.map((row) => (
+                <TableRow key={row.orderKey}>
+                  <TableCell>{row.no}</TableCell>
+                  {/* Use map to display data in cells */}
+                  <TableCell>
+                    {handleMapData(row.fromCustomer, "col1")}
+                  </TableCell>
+                  <TableCell>{handleMapData(row.toStore, "col2")}</TableCell>
+                  <TableCell>{handleMapData(row.cardName, "col3")}</TableCell>
+                  <TableCell>
+                    {handleMapData(row.orderDescription, "col4")}
+                  </TableCell>
+                  <TableCell>{handleMapData(row.value, "col5")}</TableCell>
+                  <TableCell>{handleMapData(row.date, "col6")}</TableCell>
+                  <TableCell>{handleMapData(row.status, "col7")}</TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        PaperProps={{
-          component: "form",
-          onSubmit: (event) => {
-            event.preventDefault();
-            const formData = new FormData(event.currentTarget);
-            const formJson = Object.fromEntries(formData.entries());
-            // const email = formJson.email;
-            // console.log(email);
-            // handleSave(formJson);
-            handleClose();
-          },
-        }}
-      >
-        <DialogTitle>Chỉnh sửa đơn</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="OrderID"
-            name="OrderID"
-            label="OrderID"
-            type="text"
-            fullWidth
-            variant="standard"
-            disabled
-            value={selectedData ? selectedData.OrderID : ""}
-          />
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="WalletID"
-            name="WalletID"
-            label="WalletID"
-            type="text"
-            fullWidth
-            variant="standard"
-            disabled
-            value={selectedData ? selectedData.WalletID : ""}
-          />
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="Description"
-            name="Description"
-            label="Mô tả"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={selectedData ? selectedData.Description : ""}
-          />
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="Date"
-            name="Date"
-            label="Ngày tạo đơn"
-            type="text"
-            fullWidth
-            variant="standard"
-            disabled
-            value={selectedData ? selectedData.Date : ""}
-          />
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="DepositID"
-            name="DepositID"
-            label="DepositID"
-            type="text"
-            fullWidth
-            variant="standard"
-            disabled
-            value={selectedData ? selectedData.DepositID : ""}
-          />
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="StoreWithDrawID"
-            name="StoreWithDrawID"
-            label="StoreWithDrawID"
-            type="text"
-            fullWidth
-            variant="standard"
-            disabled
-            value={selectedData ? selectedData.StoreWithDrawID : ""}
-          />
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="Type"
-            name="Type"
-            label="Loại đơn"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={selectedData ? selectedData.Type : ""}
-            disabled
-          ></TextField>
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="Status"
-            name="Status"
-            label="Trạng thái"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={selectedData ? selectedData.Status : ""}
-            disabled
-            // value={cateMapping[selectedData.categoryID.value]}
-          ></TextField>
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={handleClose}>Hủy</Button>
-          <Button
-            type="submit"
-            //  onClick={handleSave}
-          >
-            Chỉnh sửa
-          </Button>
-        </DialogActions>
-      </Dialog>
     </>
   );
 }

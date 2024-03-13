@@ -169,7 +169,6 @@ function TableView({ storeData, storeCategory }) {
 
   const [editMode, setEditMode] = useState(false);
   const [cateValue, setCateValue] = useState("");
-  const [statusValue, setStatusValue] = useState("");
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 

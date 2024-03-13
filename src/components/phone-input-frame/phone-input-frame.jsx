@@ -11,13 +11,21 @@ const PhoneInputFrame = () => {
         <div className={styles.sInThoi}>Số điện thoại</div>
         <div className={styles.smartphoneFrame}>
           <Image className={styles.lockIcon} alt="" src={acIcon} />
-          <input className={styles.labelText} placeholder="+84" type="text" />
+          <input
+            className={styles.labelText}
+            placeholder="Nhập số điện thoại"
+            type="text"
+          />
         </div>
       </div>
       <div className={styles.passwordFrame}>
         <div className={styles.loginButtonFrame}>
           <Image className={styles.lockIcon} alt="" src={pwIcon} />
-          <input className={styles.labelText} placeholder="*****" type="text" />
+          <input
+            className={styles.labelText}
+            placeholder="Mật khẩu"
+            type="password"
+          />
         </div>
         <div className={styles.mtKhu}>Mật khẩu</div>
       </div>

@@ -9,13 +9,11 @@ const NavSidebarmenuLi = () => {
         <div className={styles.navigationSidebarMenu}> */}
       <div className={styles.productsMenuItemLightB}>
         <SidebarButton title="Dashboard" href="/" />
-        <SidebarButton title="Quản lí cửa hàng" href="/store-manage" />
-        <SidebarButton title="Quản lí đơn" href="/order-manage" />
-        <SidebarButton
-          title="Quản lí gói khuyến mãi"
-          href="/promotion-manage"
-        />
         <SidebarButton title="Quản lí người dùng" href="/user-manage" />
+        <SidebarButton title="Quản lí Card" href="/promotion-manage" />
+        <SidebarButton title="Quản lí cửa hàng" href="/store-manage" />
+        <SidebarButton title="Quản lí giao dịch" href="/order-manage" />
+        <SidebarButton title="Quản lí loại thẻ" href="/cardtype-manage" />
         <SidebarButton title="Đăng xuất" href="/login" />
       </div>
     </>
