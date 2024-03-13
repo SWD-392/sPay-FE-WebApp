@@ -9,6 +9,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Menu,
   MenuItem,
   TextField,
   Typography,
@@ -28,11 +29,15 @@ const CardPromotion = ({ promotion }) => {
     setData({ ...data, [name]: value });
   };
 
-  const statusMenu = ["Active", "In Active"];
-  const statusMapping = {
-    1: "Active",
-    2: "InActive",
+  const StatusEnum = {
+    Active: { value: 1, label: "Hoạt động" },
+    InActive: { value: 2, label: "Không hoạt động" },
   };
+
+  const statusArray = Object.keys(StatusEnum).map((key) => ({
+    key,
+    ...StatusEnum[key],
+  }));
 
   const handleChangeCateValue = (event) => {
     const value = event.target.value;
@@ -57,43 +62,40 @@ const CardPromotion = ({ promotion }) => {
 
   return (
     <>
-      <Card sx={{ minWidth: 250, maxWidth: 275 }}>
+      <Card sx={{ minWidth: 300, maxWidth: 300, minHeight: 450 }}>
         <CardContent>
           <Typography sx={{ fontSize: 26 }} color="text.primary" gutterBottom>
-            {promotion.cardName}
+            {data.cardName}
           </Typography>
           {/* <Typography variant="h5" component="div"></Typography> */}
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            Chi tiết: {promotion.description}
-          </Typography>
 
           <Typography sx={{ mb: 1.5, fontSize: 14 }}>
-            Ngày tạo gói: {promotion.insDate}
+            Ngày tạo gói: {data.insDate}
           </Typography>
           <Typography sx={{ mb: 1.5, fontSize: 14 }}>
-            Thời hạn: {promotion.dateNumber} ngày
+            Thời hạn: {data.dateNumber} ngày
           </Typography>
           <Typography variant="body2">
-            <Typography sx={{ mb: 1.5, fontSize: 20 }}>
-              Tên gói khuyến mãi: {promotion.packageName}
+            <Typography sx={{ mb: 1.5 }}>
+              Chi tiết gói khuyến mãi: {data.description}
             </Typography>
-            <Typography sx={{ mb: 1.5 }} color="text.secondary">
-              Chi tiết gói khuyến mãi: {promotion.packageDescription}
-            </Typography>
-            Giá bán gói: {promotion.price} VND
+            Giá bán gói: {data.price} VND
           </Typography>
 
           <Typography variant="body2">
-            Số tiền khách dùng: {promotion.amount} VND
+            Số tiền khách dùng: {data.moneyValue} VND
           </Typography>
 
+          <Typography variant="body2">
+            Phần trăm khuyến mãi: {data.discountPercentage}%
+          </Typography>
+          <Typography variant="body2">Loại thẻ: {data.cardTypeName}</Typography>
           <Typography sx={{ mb: 1.5 }}>
-            Trạng thái:{" "}
-            {promotion.status === "True" ? "Đang hoạt động" : "Ngưng hoạt động"}
+            Trạng thái: {data.status === 1 ? "Hoạt động" : "Không hoạt động"}
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small" onClick={() => handleEdit(promotion)}>
+          <Button size="small" onClick={() => handleEdit(data)}>
             Tuỳ Chỉnh
           </Button>
         </CardActions>
@@ -126,7 +128,7 @@ const CardPromotion = ({ promotion }) => {
             type="text"
             fullWidth
             variant="standard"
-            value={data.cardName}
+            value={promotion.cardName}
             onChange={handleEditInputChange}
           />
 
@@ -140,7 +142,7 @@ const CardPromotion = ({ promotion }) => {
             type="text"
             fullWidth
             variant="standard"
-            value={data.description}
+            value={promotion.description}
             onChange={handleEditInputChange}
           />
 
@@ -157,32 +159,7 @@ const CardPromotion = ({ promotion }) => {
             value={data.dateNumber}
             onChange={handleEditInputChange}
           />
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="packageName"
-            name="packageName"
-            label="Tên gói khuyến mãi"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={data.packageName}
-            onChange={handleEditInputChange}
-          />
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="packageDescription"
-            name="packageDescription"
-            label="Mô tả gói khuyến mãi"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={data.packageDescription}
-            onChange={handleEditInputChange}
-          />
+
           <TextField
             autoFocus
             required
@@ -193,7 +170,20 @@ const CardPromotion = ({ promotion }) => {
             type="number"
             fullWidth
             variant="standard"
-            value={data.amount}
+            value={data.price}
+            onChange={handleEditInputChange}
+          />
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="price"
+            name="price"
+            label="Số tiền khách dùng"
+            type="number"
+            fullWidth
+            variant="standard"
+            value={data.moneyValue}
             onChange={handleEditInputChange}
           />
           <TextField
@@ -209,6 +199,7 @@ const CardPromotion = ({ promotion }) => {
             value={data.price}
             onChange={handleEditInputChange}
           />
+
           <TextField
             autoFocus
             required
@@ -221,12 +212,11 @@ const CardPromotion = ({ promotion }) => {
             value={data.status}
             onChange={handleChangeCateValue}
           >
-            <MenuItem key="true" value={"Active"}>
-              Hoạt động
-            </MenuItem>
-            <MenuItem key="false" value={"DeActive"}>
-              Ngưng hoạt động
-            </MenuItem>
+            {statusArray.map((status) => (
+              <MenuItem key={status.value} value={status.value}>
+                {status.label}
+              </MenuItem>
+            ))}
           </TextField>
         </DialogContent>
 

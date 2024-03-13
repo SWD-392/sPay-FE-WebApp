@@ -33,9 +33,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { set } from "react-hook-form";
 import ArrowDropUpSharpIcon from "@mui/icons-material/ArrowDropUpSharp";
 import ArrowDropDownSharpIcon from "@mui/icons-material/ArrowDropDownSharp";
-import { deleteStore } from "@/app/actions";
+import { createStore, deleteStore } from "@/app/actions";
 
-function TableView({ storeData }) {
+function TableView({ storeData, storeCategory }) {
   const [data, setData] = useState(storeData);
   const [open, setOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
@@ -43,7 +43,6 @@ function TableView({ storeData }) {
     key: null,
     direction: "ascending",
   });
-  console.log(data);
   useEffect(() => {
     setData(storeData);
   }, [storeData]);
@@ -67,57 +66,43 @@ function TableView({ storeData }) {
   //add store
   const [newStoreData, setNewStoreData] = useState({
     storeName: "",
+    description: "",
+    storeCategoryKey: "",
     ownerName: "",
     phoneNumber: "",
-    storeCategory: "",
-    status: "",
+    password: "",
+    balance: 0,
   });
 
   const handleAddInputChange = (e) => {
     const { name, value } = e.target;
-    setNewStoreData({
-      ...newStoreData,
+    setNewStoreData((prevState) => ({
+      ...prevState,
       [name]: value,
-    });
+    }));
   };
+  useEffect(() => {
+    console.log("new store", newStoreData);
+  }, [newStoreData]);
 
   //add store
   const handleAddStore = async () => {
-    try {
-      console.log(newStoreData);
-      const response = await fetch("/api/stores", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newStoreData),
+    createStore(newStoreData)
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
       });
-      if (!response.ok) {
-        throw new Error("Failed to add store");
-      }
-      // Xử lý thành công, đóng dialog hoặc thực hiện các thao tác khác
-      handleClose();
-    } catch (error) {
-      console.error("Error adding store:", error);
-      // Xử lý lỗi (hiển thị thông báo lỗi, v.v.)
-    }
   };
   // Save changes to API (you'll need to implement your backend logic)
 
-  const categoriesIdMenu = [
-    "Food",
-    "Clothes",
-    "Accesstory",
-    "Grocery",
-    "Electronics",
-    "Ẩm thực",
-    "Đồ gia dụng",
-  ];
+  const categoriesIdMenu = storeCategory.map((category) => category);
+  console.log(categoriesIdMenu);
 
   const StatusEnum = {
     Active: { value: 1, description: "Đang hoạt động" },
     Banned: { value: 2, description: "Bị Khoá" },
-    Deleted: { value: 3, description: "Đã bị xoá" },
   };
 
   const statusArray = Object.keys(StatusEnum).map((key) => ({
@@ -215,7 +200,7 @@ function TableView({ storeData }) {
                   direction={sortConfig.direction}
                   onClick={() => requestSort("storeName")}
                 >
-                  Tên cửa hàng
+                  Tên
                   {sortConfig.key === "storeName" ? (
                     sortConfig.direction === "ascending" ? (
                       <ArrowDropUpSharpIcon />
@@ -231,7 +216,7 @@ function TableView({ storeData }) {
                   direction={sortConfig.direction}
                   onClick={() => requestSort("ownerName")}
                 >
-                  Chủ cửa hàng
+                  Tên chủ
                   {sortConfig.key === "ownerName" ? (
                     sortConfig.direction === "ascending" ? (
                       <ArrowDropUpSharpIcon />
@@ -263,7 +248,7 @@ function TableView({ storeData }) {
                   direction={sortConfig.direction}
                   onClick={() => requestSort("storeCategory")}
                 >
-                  Phân loại cửa hàng
+                  Phân loại
                   {sortConfig.key === "storeCategory" ? (
                     sortConfig.direction === "ascending" ? (
                       <ArrowDropUpSharpIcon />
@@ -369,6 +354,32 @@ function TableView({ storeData }) {
               // const email = formJson.email;
               // console.log(email);
               // handleCreate(formJson);
+              if (!formJson.storeName) {
+                alert("Vui lòng nhập tên cửa hàng");
+                return;
+              }
+
+              if (!formJson.description) {
+                alert("Vui lòng nhập mô tả cửa hàng");
+                return;
+              }
+
+              if (!formJson.ownerName) {
+                alert("Vui lòng nhập tên chủ cửa hàng");
+                return;
+              }
+
+              const phoneRegex = /^[0-9]{10,11}$/;
+              if (!phoneRegex.test(formJson.phoneNumber)) {
+                alert("Vui lòng nhập số điện thoại hợp lệ");
+                return;
+              }
+
+              if (!formJson.password || formJson.password.length < 8) {
+                alert("Vui lòng nhập mật khẩu có ít nhất 8 ký tự");
+                return;
+              }
+              handleAddStore();
               handleClose();
             },
           }}
@@ -386,6 +397,19 @@ function TableView({ storeData }) {
               fullWidth
               variant="standard"
               value={newStoreData.storeName}
+              onChange={handleAddInputChange}
+            />
+            <TextField
+              autoFocus
+              required
+              margin="dense"
+              id="description"
+              name="description"
+              label="Mô tả"
+              type="text"
+              fullWidth
+              variant="standard"
+              value={newStoreData.description}
               onChange={handleAddInputChange}
             />
             <TextField
@@ -411,28 +435,44 @@ function TableView({ storeData }) {
               type="number"
               fullWidth
               variant="standard"
-              value={newStoreData.phone}
+              value={newStoreData.phoneNumber}
               onChange={handleAddInputChange}
             />
             <TextField
               autoFocus
               required
               margin="dense"
-              id="storeCategory"
-              name="storeCategory"
+              id="password"
+              name="password"
+              label="Mật khẩu"
+              type="password"
+              fullWidth
+              variant="standard"
+              value={newStoreData.password}
+              onChange={handleAddInputChange}
+            />
+            <TextField
+              autoFocus
+              required
+              margin="dense"
+              id="storeCategoryKey"
+              name="storeCategoryKey"
               select
               label="Chọn loại hình cửa hàng"
               fullWidth
-              value={newStoreData.storeCategory}
+              value={newStoreData.storeCategoryKey}
               onChange={handleAddInputChange}
             >
               {categoriesIdMenu.map((category) => (
-                <MenuItem key={category} value={category}>
-                  {category}
+                <MenuItem
+                  key={category.storeCategoryKey}
+                  value={category.storeCategoryKey}
+                >
+                  {category.storeCategoryName}
                 </MenuItem>
               ))}
             </TextField>
-            <TextField
+            {/* <TextField
               autoFocus
               required
               margin="dense"
@@ -449,14 +489,12 @@ function TableView({ storeData }) {
                   {status.description}
                 </MenuItem>
               ))}
-            </TextField>
+            </TextField> */}
           </DialogContent>
 
           <DialogActions>
             <Button onClick={handleClose}>Hủy</Button>
-            <Button type="submit" onClick={handleAddStore}>
-              Tạo mới
-            </Button>
+            <Button type="submit">Tạo mới</Button>
           </DialogActions>
         </Dialog>
       ) : (
@@ -522,17 +560,24 @@ function TableView({ storeData }) {
               autoFocus
               required
               margin="dense"
-              id="storeCategory"
-              name="storeCategory"
+              id="storeCategoryKey"
+              name="storeCategoryKey"
               select
               label="Chọn loại hình cửa hàng"
               fullWidth
-              value={selectedData ? selectedData.storeCategory : ""}
+              value={
+                selectedData
+                  ? selectedData.storeCategoryKey
+                  : selectedData.storeCategoryName
+              }
               onChange={handleChangeCateValue}
             >
               {categoriesIdMenu.map((category) => (
-                <MenuItem key={category} value={category}>
-                  {category}
+                <MenuItem
+                  key={category.storeCategoryKey}
+                  value={category.storeCategoryKey}
+                >
+                  {category.storeCategoryName}
                 </MenuItem>
               ))}
             </TextField>

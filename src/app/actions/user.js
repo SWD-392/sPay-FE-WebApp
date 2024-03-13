@@ -2,13 +2,15 @@
 
 import axios from "axios";
 
-const BASE_URL = process.env.API_URL;
+// const BASE_URL = process.env.API_URL;
+const BASE_URL = process.env.API_URL_LOCAL;
+
 const QUERY_USERS = {
   GET_USERS: "/api/admin/Customer/get-all",
 };
 
 /**
- * Get the store
+ * Get user
  */
 export async function getUsers() {
   try {
