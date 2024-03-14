@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import CardTypeTable from "../table/table";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Pagination, Stack } from "@mui/material";
+import { Box, CircularProgress, Pagination, Stack } from "@mui/material";
 
 const CardTypePagination = ({ cardTypes }) => {
   console.log("cardTypes", cardTypes);
@@ -37,6 +37,20 @@ const CardTypePagination = ({ cardTypes }) => {
       setLoading(false);
     }
   }, [cardTypes]);
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "70vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    ); // render loading message if loading is true
+  }
   return (
     <div>
       <CardTypeTable cardTypes={cardTypes} />

@@ -1,3 +1,4 @@
+"use server";
 import styles from "./nav-sidebar-menu-li.module.css";
 import SidebarButton from "./sidebar-button/sidebar-button";
 

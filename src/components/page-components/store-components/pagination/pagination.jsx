@@ -1,6 +1,6 @@
 "use client";
 
-import { Pagination, Stack } from "@mui/material";
+import { Box, CircularProgress, Pagination, Stack } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import TableView from "../table/table";
 import { set } from "react-hook-form";
@@ -40,6 +40,22 @@ const PaginationComponent = ({ stores, cardType, storeCategory }) => {
       setLoading(false);
     }
   }, [stores]);
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "70vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+    // render loading message if loading is true
+  }
 
   return (
     <div>

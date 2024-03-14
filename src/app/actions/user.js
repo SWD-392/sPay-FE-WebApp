@@ -6,15 +6,17 @@ import axios from "axios";
 const BASE_URL = process.env.API_URL_LOCAL;
 
 const QUERY_USERS = {
-  GET_USERS: "/api/admin/Customer/get-all",
+  GET_USERS: "/api/Customer",
 };
 
 /**
  * Get user
  */
-export async function getUsers() {
+export async function getUsers(pageIndex, pageSize) {
   try {
-    const res = await axios.get(`${BASE_URL}${QUERY_USERS.GET_USERS}`);
+    const res = await axios.get(
+      `${BASE_URL}${QUERY_USERS.GET_USERS}?PageIndex=${pageIndex}&PageSize=${pageSize}`
+    );
 
     const data = res.data.data;
 

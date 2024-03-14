@@ -73,32 +73,39 @@ const UserTable = ({ data }) => {
           <TableHead>
             <TableRow>
               {/* Define table headers based on your data structure */}
-              <TableCell>Họ và Tên</TableCell>
+              <TableCell>No.</TableCell>
+              <TableCell>Họ tên khách</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Địa chỉ</TableCell>
+              <TableCell>Tổng card đang có</TableCell>
+              <TableCell>Số dư</TableCell>
+              <TableCell>Trạng thái</TableCell>
               <TableCell>Edit</TableCell>
-              {/* <TableCell>Delete</TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row) => (
-              <TableRow key={row.customerKey}>
-                {/* Use map to display data in cells */}
-                <TableCell>
-                  {handleMapData(row.firstName + " " + row.lastName, "col1")}
-                </TableCell>
-                <TableCell>{handleMapData(row.email, "col2")}</TableCell>
-                <TableCell>{handleMapData(row.address, "col3")}</TableCell>
-                <TableCell>
-                  <IconButton
-                    className={styles.customIconButton}
-                    onClick={() => handleRowClick(row)}
-                  >
-                    Edit
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            {data.items &&
+              data.items.map((row) => (
+                <TableRow key={row.customerKey}>
+                  {/* Use map to display data in cells */}
+                  <TableCell>
+                    {handleMapData(row.customerName + "col1")}
+                  </TableCell>
+                  <TableCell>{handleMapData(row.email, "col2")}</TableCell>
+                  <TableCell>{handleMapData(row.address, "col3")}</TableCell>
+                  <TableCell>{handleMapData(row.numOfCards, "col4")}</TableCell>
+                  <TableCell>{handleMapData(row.balance, "col5")}</TableCell>
+                  <TableCell>{handleMapData(row.status, "col6")}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      className={styles.customIconButton}
+                      onClick={() => handleRowClick(row)}
+                    >
+                      Edit
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -124,13 +131,13 @@ const UserTable = ({ data }) => {
             autoFocus
             required
             margin="dense"
-            id="firstName"
-            name="firstName"
-            label="Họ"
+            id="customerName"
+            name="customerName"
+            label=""
             type="text"
             fullWidth
             variant="standard"
-            value={selectedData ? selectedData.firstName : ""}
+            value={selectedData ? selectedData.customerName : ""}
             disabled
           />
           <TextField

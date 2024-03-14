@@ -1,7 +1,7 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
 import TableView from "../table/table";
-import { Pagination, Stack } from "@mui/material";
+import { Box, CircularProgress, Pagination, Stack } from "@mui/material";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const PaginationOrder = ({ orders }) => {
@@ -35,6 +35,20 @@ const PaginationOrder = ({ orders }) => {
       setLoading(false);
     }
   }, [orders]);
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "70vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    ); // render loading message if loading is true
+  }
   return (
     <>
       <TableView orderData={orders} />

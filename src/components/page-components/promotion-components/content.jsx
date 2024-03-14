@@ -4,7 +4,9 @@ import CardPromotion from "@/components/page-components/promotion-components/car
 import styles from "./content.module.css";
 import { useEffect, useState } from "react";
 import {
+  Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -182,6 +184,22 @@ const PromotionCompo = ({ promotions, storeCate }) => {
         console.log(error);
       });
   };
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "70vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+    // render loading message if loading is true
+  }
 
   return (
     <div>
