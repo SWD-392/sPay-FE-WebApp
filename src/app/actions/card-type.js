@@ -7,7 +7,7 @@ const BASE_URL = process.env.API_URL_LOCAL;
 
 const QUERY_CARDS = {
   GET_CARDS: "/api/CardType",
-  GET_CARDS_TYPE: "/api/CardType/",
+  GET_CARDS_TYPE: "/api/CardType",
 };
 
 /**

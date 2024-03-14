@@ -1,5 +1,6 @@
 import { getOrders } from "@/app/actions/order";
 import PaginationOrder from "@/components/page-components/order-component/pagination/pagination";
+import { Suspense } from "react";
 
 export default async function OrderManage({ searchParams }) {
   const page = searchParams.page;
@@ -13,7 +14,9 @@ export default async function OrderManage({ searchParams }) {
   return (
     <div>
       <h1> Quản lí giao dịch </h1>
-      <PaginationOrder orders={data.data} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <PaginationOrder orders={data.data} />
+      </Suspense>
     </div>
   );
 }

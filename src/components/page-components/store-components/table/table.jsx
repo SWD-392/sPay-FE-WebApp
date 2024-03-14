@@ -34,6 +34,7 @@ import { set } from "react-hook-form";
 import ArrowDropUpSharpIcon from "@mui/icons-material/ArrowDropUpSharp";
 import ArrowDropDownSharpIcon from "@mui/icons-material/ArrowDropDownSharp";
 import { createStore, deleteStore } from "@/app/actions";
+import { toast } from "react-toastify";
 
 function TableView({ storeData, storeCategory }) {
   const [data, setData] = useState(storeData);
@@ -46,6 +47,18 @@ function TableView({ storeData, storeCategory }) {
   useEffect(() => {
     setData(storeData);
   }, [storeData]);
+
+  const notifySucess = (message) =>
+    toast.success(message, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
 
   const handleRowClick = (row) => {
     setSelectedData(row); // Store the selected row data
@@ -182,6 +195,9 @@ function TableView({ storeData, storeCategory }) {
     const value = event.target.value === "true" ? true : false;
     setSelectedData({ ...selectedData, status: value });
   };
+
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [storeKeyToDelete, setStoreKeyToDelete] = useState(null);
 
   return (
     <>
@@ -330,7 +346,12 @@ function TableView({ storeData, storeCategory }) {
                 </TableCell>
                 {/* delete */}
                 <TableCell>
-                  <IconButton onClick={() => deleteStore(row.storeKey)}>
+                  <IconButton
+                    onClick={() => {
+                      setStoreKeyToDelete(row.storeKey);
+                      setConfirmOpen(true);
+                    }}
+                  >
                     <DeleteIcon />
                   </IconButton>
                 </TableCell>
@@ -493,7 +514,12 @@ function TableView({ storeData, storeCategory }) {
 
           <DialogActions>
             <Button onClick={handleClose}>Hủy</Button>
-            <Button type="submit">Tạo mới</Button>
+            <Button
+              type="submit"
+              onClick={() => notifySucess("Thêm cửa hàng mới thành công")}
+            >
+              Tạo mới
+            </Button>
           </DialogActions>
         </Dialog>
       ) : (
@@ -611,6 +637,25 @@ function TableView({ storeData, storeCategory }) {
           </DialogActions>
         </Dialog>
       )}
+
+      {/* modal xác nhận xoá */}
+      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
+        <DialogTitle>Xác nhận</DialogTitle>
+        <DialogContent>Bạn có chắc chắn muốn xóa cửa hàng này?</DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmOpen(false)}>Hủy</Button>
+          <Button
+            onClick={() => {
+              deleteStore(storeKeyToDelete);
+              setConfirmOpen(false);
+              notifySucess("Xoá cửa hàng thành công");
+            }}
+            //  deleteStore(row.storeKey)
+          >
+            Đồng ý
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

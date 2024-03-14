@@ -6,7 +6,12 @@ import { set } from "react-hook-form";
 import UserTable from "../table";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-const PaginationComponentUser = ({ users }) => {
+const PaginationComponentUser = ({
+  users,
+  cardTypes,
+  storeTypes,
+  promotions,
+}) => {
   const [loading, setLoading] = useState(true); // add loading state
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -48,13 +53,18 @@ const PaginationComponentUser = ({ users }) => {
           minHeight: "70vh",
         }}
       >
-        Có lỗi xảy ra!!!
+        <CircularProgress />
       </Box>
     ); // render loading message if loading is true
   }
   return (
     <div>
-      <UserTable data={users} />
+      <UserTable
+        data={users}
+        cardTypes={cardTypes}
+        storeTypes={storeTypes}
+        promotions={promotions}
+      />
       <Stack spacing={2} style={{ position: "fixed", bottom: 60, right: 200 }}>
         <Pagination
           page={currentPage}

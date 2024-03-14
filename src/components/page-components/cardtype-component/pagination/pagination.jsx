@@ -44,7 +44,7 @@ const CardTypePagination = ({ cardTypes }) => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          minHeight: "60vh",
+          minHeight: "70vh",
         }}
       >
         Có lỗi xảy ra!!!

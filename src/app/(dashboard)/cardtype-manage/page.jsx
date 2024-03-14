@@ -1,6 +1,6 @@
 import { getCardsType } from "@/app/actions/card-type";
 import CardTypePagination from "@/components/page-components/cardtype-component/pagination/pagination";
-import React from "react";
+import React, { Suspense } from "react";
 
 export default async function CardType({ searchParams }) {
   const page = searchParams.page;
@@ -14,7 +14,9 @@ export default async function CardType({ searchParams }) {
   return (
     <div>
       <h1>Quản lí loại thẻ</h1>
-      <CardTypePagination cardTypes={cardTypes.data} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <CardTypePagination cardTypes={cardTypes.data} />
+      </Suspense>
     </div>
   );
 }

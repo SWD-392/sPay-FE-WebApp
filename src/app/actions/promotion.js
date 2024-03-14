@@ -29,6 +29,19 @@ export async function getPromotions(pageIndex, pageSize) {
   }
 }
 
+export async function getPromotionForUser() {
+  try {
+    const res = await axios.get(`${BASE_URL}${QUERY_PROMOTION.GET_PROMOTIONS}`);
+
+    const data = res.data.data;
+
+    return { data: data };
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+
 export async function createPromotion(promotion) {
   try {
     const res = await axios.post(

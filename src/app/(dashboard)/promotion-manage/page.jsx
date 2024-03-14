@@ -1,6 +1,7 @@
 import { getStoreCategory } from "@/app/actions";
 import { getPromotions } from "@/app/actions/promotion";
 import PromotionCompo from "@/components/page-components/promotion-components/content";
+import { Suspense } from "react";
 
 export default async function PromotionManage({ searchParams }) {
   const page = searchParams.page;
@@ -13,7 +14,12 @@ export default async function PromotionManage({ searchParams }) {
   return (
     <div>
       <h1> Quản lí gói khuyến mãi</h1>
-      <PromotionCompo promotions={promotions.data} storeCate={storeCate.data} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <PromotionCompo
+          promotions={promotions.data}
+          storeCate={storeCate.data}
+        />
+      </Suspense>
     </div>
   );
 }

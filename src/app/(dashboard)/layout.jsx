@@ -7,7 +7,8 @@ import NavSidebarmenuLi from "@/components/nav-sidebar-menu-li/nav-sidebar-menu-
 import Topbar from "@/components/nav-topbar/nav-topbar";
 import { Grid } from "@mui/material";
 import CardInfo from "@/components/page-components/dashboard-components/card-info";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -19,6 +20,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
+        <ToastContainer />
         <Topbar />
 
         <Grid className="test" container spacing={2}>

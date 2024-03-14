@@ -195,7 +195,7 @@ const PromotionCompo = ({ promotions, storeCate }) => {
           minHeight: "70vh",
         }}
       >
-        <CircularProgress />
+        Có lỗi xảy ra!!!
       </Box>
     );
     // render loading message if loading is true
@@ -332,11 +332,12 @@ const PromotionCompo = ({ promotions, storeCate }) => {
             // value={promotion.Promotion}
             onChange={handleAddInputChange}
           >
-            {cardTypeKey.map((item) => (
-              <MenuItem key={item.cardTypeKey} value={item.cardTypeKey}>
-                {item.cardTypeName}
-              </MenuItem>
-            ))}
+            {cardTypeKey &&
+              cardTypeKey.map((item) => (
+                <MenuItem key={item.cardTypeKey} value={item.cardTypeKey}>
+                  {item.cardTypeName}
+                </MenuItem>
+              ))}
           </TextField>
 
           <TextField
