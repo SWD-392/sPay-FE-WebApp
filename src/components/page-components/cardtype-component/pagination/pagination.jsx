@@ -44,10 +44,10 @@ const CardTypePagination = ({ cardTypes }) => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          minHeight: "70vh",
+          minHeight: "60vh",
         }}
       >
-        <CircularProgress />
+        Có lỗi xảy ra!!!
       </Box>
     ); // render loading message if loading is true
   }

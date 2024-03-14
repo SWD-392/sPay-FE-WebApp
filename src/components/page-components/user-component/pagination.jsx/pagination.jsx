@@ -48,7 +48,7 @@ const PaginationComponentUser = ({ users }) => {
           minHeight: "70vh",
         }}
       >
-        <CircularProgress />
+        Có lỗi xảy ra!!!
       </Box>
     ); // render loading message if loading is true
   }
