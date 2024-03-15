@@ -47,7 +47,7 @@ const CardTypePagination = ({ cardTypes }) => {
           minHeight: "70vh",
         }}
       >
-        Có lỗi xảy ra!!!
+        <CircularProgress />
       </Box>
     ); // render loading message if loading is true
   }

@@ -1,5 +1,6 @@
 import { getOrders } from "@/app/actions/order";
 import PaginationOrder from "@/components/page-components/order-component/pagination/pagination";
+import { Box, CircularProgress } from "@mui/material";
 import { Suspense } from "react";
 
 export default async function OrderManage({ searchParams }) {
@@ -14,7 +15,20 @@ export default async function OrderManage({ searchParams }) {
   return (
     <div>
       <h1> Quản lí giao dịch </h1>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense
+        fallback={
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: "70vh",
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        }
+      >
         <PaginationOrder orders={data.data} />
       </Suspense>
     </div>

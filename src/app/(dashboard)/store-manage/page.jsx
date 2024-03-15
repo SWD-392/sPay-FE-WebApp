@@ -28,7 +28,6 @@ export default async function ShopManage({ searchParams }) {
       <Suspense
         fallback={
           <div>
-            {" "}
             <Box sx={{ display: "flex" }}>
               <CircularProgress />
             </Box>
