@@ -6,11 +6,9 @@ import React, { Suspense } from "react";
 export default async function CardType({ searchParams }) {
   const page = searchParams.page;
   const perpage = searchParams.per_page;
-  const cardTypes = await getCardsType();
+  const cardTypes = await getCardsType(page ?? "1", perpage ?? "6");
 
   //   cardTypes={cardTypes.data}
-
-  console.log(cardTypes.data || cardTypes.error);
 
   return (
     <div>
@@ -25,8 +23,7 @@ export default async function CardType({ searchParams }) {
               minHeight: "70vh",
             }}
           >
-            {" "}
-            <CircularProgress />{" "}
+            <CircularProgress />
           </Box>
         }
       >

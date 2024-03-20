@@ -289,38 +289,7 @@ function TableView({ storeData, storeCategory }) {
                   ) : null}
                 </TableSortLabel>
               </TableCell>
-              <TableCell>
-                <TableSortLabel
-                  active={sortConfig.key === "insDate"}
-                  direction={sortConfig.direction}
-                  onClick={() => requestSort("insDate")}
-                >
-                  Ngày tạo
-                  {sortConfig.key === "insDate" ? (
-                    sortConfig.direction === "ascending" ? (
-                      <ArrowDropUpSharpIcon />
-                    ) : (
-                      <ArrowDropDownSharpIcon />
-                    )
-                  ) : null}
-                </TableSortLabel>
-              </TableCell>
-              <TableCell onClick={() => requestSort("status")}>
-                <TableSortLabel
-                  active={sortConfig.key === "status"}
-                  direction={sortConfig.direction}
-                  onClick={() => requestSort("status")}
-                >
-                  Trạng thái
-                  {sortConfig.key === "status" ? (
-                    sortConfig.direction === "ascending" ? (
-                      <ArrowDropUpSharpIcon />
-                    ) : (
-                      <ArrowDropDownSharpIcon />
-                    )
-                  ) : null}
-                </TableSortLabel>
-              </TableCell>
+
               <TableCell>Chỉnh sửa</TableCell>
               <TableCell>Xoá</TableCell>
             </TableRow>
@@ -336,8 +305,6 @@ function TableView({ storeData, storeCategory }) {
                   {handleMapData(row.storeCategory, "col4")}
                 </TableCell>
                 <TableCell>{handleMapData(row.balance, "col5")}</TableCell>
-                <TableCell>{handleMapData(row.insDate, "col6")}</TableCell>
-                <TableCell>{handleMapData(row.status, "col7")}</TableCell>
                 {/* edit */}
                 <TableCell>
                   <IconButton onClick={() => handleRowClick(row)}>

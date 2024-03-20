@@ -10,7 +10,7 @@ const AvatarComponent = () => {
       <div className={styles.avatarcontainer}>
         <div>
           <Stack direction="row" spacing={2}>
-            <Avatar alt="Remy Sharp" src="@public/image/avatar.png" />
+            <Avatar alt="Remy Sharp" src={AvatarImage} />
           </Stack>
         </div>
         <div className={styles.avatarTitle}>

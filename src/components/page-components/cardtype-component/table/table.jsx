@@ -16,16 +16,19 @@ import {
   TableSortLabel,
   TextField,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowDropUpSharpIcon from "@mui/icons-material/ArrowDropUpSharp";
 import ArrowDropDownSharpIcon from "@mui/icons-material/ArrowDropDownSharp";
+import { toast } from "react-toastify";
+import { createCardType, deleteCardType, updateCardType } from "@/app/actions";
 
 const CardTypeTable = ({ cardTypes }) => {
   const [data, setData] = useState(cardTypes);
   const [open, setOpen] = useState(false);
+  const [selectedData, setSelectedData] = useState({});
 
   const [sortConfig, setSortConfig] = useState({
     key: null,
@@ -63,9 +66,60 @@ const CardTypeTable = ({ cardTypes }) => {
   };
 
   const [editMode, setEditMode] = useState(false);
-  const [cateValue, setCateValue] = useState("");
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const handleEdit = (row) => {
+    setSelectedData(row);
+    setEditMode(true);
+    setOpen(true);
+  };
+
+  // const onChangeSelectedData = (e) => {
+  //   const [name, value] = e.target;
+  //   setSelectedData({ ...selectedData, [name]: value });
+  // };
+
+  const onChangeSelectedData = (name, value) => {
+    setSelectedData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleAddCardType = async (formJson) => {
+    try {
+      const res = await createCardType(formJson);
+      if (res.data) {
+        toast.success("Thêm loại thẻ mới thành công");
+      } else {
+        toast.error(res.error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleEditCardType = async (formJson) => {
+    console.log("formJson", formJson);
+    console.log("seclectedData", selectedData.cardTypeKey);
+    const res = await updateCardType(formJson, selectedData.cardTypeKey);
+    if (res.data) {
+      toast.success("Chỉnh sửa loại thẻ thành công");
+    } else {
+      toast.error(res.error);
+    }
+  };
+
+  const delCardType = async (id) => {
+    const res = await deleteCardType(id);
+    if (res.data) {
+      toast.success("Xoá loại thẻ thành công");
+    } else {
+      toast.error(res.error);
+    }
+  };
+
+  useEffect(() => {
+    // Your side effect goes here. This code will run every time `cardTypes` changes.
+  }, [data]);
 
   return (
     <>
@@ -94,12 +148,12 @@ const CardTypeTable = ({ cardTypes }) => {
               </TableCell>
               <TableCell>
                 <TableSortLabel
-                  active={sortConfig.key === "typeDescription"}
+                  active={sortConfig.key === "description"}
                   direction={sortConfig.direction}
-                  onClick={() => requestSort("typeDescription")}
+                  onClick={() => requestSort("description")}
                 >
                   Mô tả
-                  {sortConfig.key === "typeDescription" ? (
+                  {sortConfig.key === "description" ? (
                     sortConfig.direction === "ascending" ? (
                       <ArrowDropUpSharpIcon />
                     ) : (
@@ -110,12 +164,12 @@ const CardTypeTable = ({ cardTypes }) => {
               </TableCell>
               <TableCell>
                 <TableSortLabel
-                  active={sortConfig.key === "withdrawalAllowed"}
+                  active={sortConfig.key === "totalCardUse"}
                   direction={sortConfig.direction}
-                  onClick={() => requestSort("withdrawalAllowed")}
+                  onClick={() => requestSort("totalCardUse")}
                 >
-                  Rút tiền
-                  {sortConfig.key === "withdrawalAllowed" ? (
+                  Đang được dùng
+                  {sortConfig.key === "totalCardUse" ? (
                     sortConfig.direction === "ascending" ? (
                       <ArrowDropUpSharpIcon />
                     ) : (
@@ -124,6 +178,7 @@ const CardTypeTable = ({ cardTypes }) => {
                   ) : null}
                 </TableSortLabel>
               </TableCell>
+
               <TableCell>Chỉnh sửa</TableCell>
               <TableCell>Xoá</TableCell>
             </TableRow>
@@ -133,17 +188,31 @@ const CardTypeTable = ({ cardTypes }) => {
             {sortedData.map((row) => (
               <TableRow key={row.cardTypeKey}>
                 <TableCell>{row.cardTypeName}</TableCell>
-                <TableCell>{row.typeDescription}</TableCell>
+                <TableCell>{row.description}</TableCell>
+                <TableCell>{row.totalCardUse}</TableCell>
                 <TableCell>
-                  {row.withdrawalAllowed ? "Cho phép" : "Không cho phép"}
-                </TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleRowClick(row)}>
+                  <IconButton
+                    disabled={row.totalCardUse > 0}
+                    onClick={() => handleEdit(row)}
+                    title={
+                      row.totalCardUse > 0
+                        ? "Không thể chỉnh sửa loại thẻ đang được sử dụng"
+                        : ""
+                    }
+                  >
                     <EditIcon />
                   </IconButton>
                 </TableCell>
                 <TableCell>
-                  <IconButton onClick={() => deleteStore(row.storeKey)}>
+                  <IconButton
+                    disabled={row.totalCardUse > 0}
+                    onClick={() => delCardType(row.cardTypeKey)}
+                    title={
+                      row.totalCardUse > 0
+                        ? "Không thể xoá loại thẻ đang được sử dụng"
+                        : ""
+                    }
+                  >
                     <DeleteIcon />
                   </IconButton>
                 </TableCell>
@@ -162,35 +231,16 @@ const CardTypeTable = ({ cardTypes }) => {
               event.preventDefault();
               const formData = new FormData(event.currentTarget);
               const formJson = Object.fromEntries(formData.entries());
-              // const email = formJson.email;
-              // console.log(email);
-              // handleCreate(formJson);
-              if (!formJson.storeName) {
-                alert("Vui lòng nhập tên cửa hàng");
+              if (!formJson.cardTypeName) {
+                toast.warn("Vui lòng nhập tên loại card");
                 return;
               }
 
               if (!formJson.description) {
-                alert("Vui lòng nhập mô tả cửa hàng");
+                toast.warn("Vui lòng nhập mô tả loại card");
                 return;
               }
-
-              if (!formJson.ownerName) {
-                alert("Vui lòng nhập tên chủ cửa hàng");
-                return;
-              }
-
-              const phoneRegex = /^[0-9]{10,11}$/;
-              if (!phoneRegex.test(formJson.phoneNumber)) {
-                alert("Vui lòng nhập số điện thoại hợp lệ");
-                return;
-              }
-
-              if (!formJson.password || formJson.password.length < 8) {
-                alert("Vui lòng nhập mật khẩu có ít nhất 8 ký tự");
-                return;
-              }
-              handleAddStore();
+              handleAddCardType(formJson);
               handleClose();
             },
           }}
@@ -214,8 +264,8 @@ const CardTypeTable = ({ cardTypes }) => {
               autoFocus
               required
               margin="dense"
-              id="typeDescription"
-              name="typeDescription"
+              id="description"
+              name="description"
               label="Mô tả"
               type="text"
               fullWidth
@@ -223,28 +273,6 @@ const CardTypeTable = ({ cardTypes }) => {
               // value={newStoreData.description}
               // onChange={handleAddInputChange}
             />
-
-            <TextField
-              autoFocus
-              required
-              margin="dense"
-              id="withdrawalAllowed"
-              name="withdrawalAllowed"
-              select
-              label="Trạng thái rút tiền"
-              fullWidth
-              // value={newStoreData.storeCategoryKey}
-              // onChange={handleAddInputChange}
-            >
-              {/* {categoriesIdMenu.map((category) => (
-                <MenuItem
-                  key={category.storeCategoryKey}
-                  value={category.storeCategoryKey}
-                >
-                  {category.storeCategoryName}
-                </MenuItem>
-              ))} */}
-            </TextField>
           </DialogContent>
 
           <DialogActions>
@@ -262,9 +290,16 @@ const CardTypeTable = ({ cardTypes }) => {
               event.preventDefault();
               const formData = new FormData(event.currentTarget);
               const formJson = Object.fromEntries(formData.entries());
-              // const email = formJson.email;
-              // console.log(email);
-              // handleSave(formJson);
+              if (!formJson.cardTypeName) {
+                toast.warn("Vui lòng nhập tên loại card");
+                return;
+              }
+
+              if (!formJson.description) {
+                toast.warn("Vui lòng nhập mô tả loại card");
+                return;
+              }
+              handleEditCardType(formJson);
               handleClose();
             },
           }}
@@ -281,48 +316,26 @@ const CardTypeTable = ({ cardTypes }) => {
               type="text"
               fullWidth
               variant="standard"
-              // value={selectedData ? selectedData.storeName : ""}
-              disabled
+              value={selectedData.cardTypeName}
+              onChange={(event) =>
+                onChangeSelectedData("cardTypeName", event.target.value)
+              }
             />
             <TextField
               autoFocus
               required
               margin="dense"
-              id="typeDescription"
-              name="typeDescription"
+              id="description"
+              name="description"
               label="Mô tả"
               type="text"
               fullWidth
               variant="standard"
-              // value={selectedData ? selectedData.ownerName : ""}
-              disabled
+              value={selectedData.description}
+              onChange={(event) =>
+                onChangeSelectedData("description", event.target.value)
+              }
             />
-
-            <TextField
-              autoFocus
-              required
-              margin="dense"
-              id="withdrawalAllowed"
-              name="withdrawalAllowed"
-              select
-              label="Trạng thái rút tiền"
-              fullWidth
-              // value={
-              //   selectedData
-              //     ? selectedData.storeCategoryKey
-              //     : selectedData.storeCategoryName
-              // }
-              // onChange={handleChangeCateValue}
-            >
-              {/* {categoriesIdMenu.map((category) => (
-                <MenuItem
-                  key={category.storeCategoryKey}
-                  value={category.storeCategoryKey}
-                >
-                  {category.storeCategoryName}
-                </MenuItem>
-              ))} */}
-            </TextField>
           </DialogContent>
 
           <DialogActions>

@@ -1,21 +1,27 @@
 "use server";
 
 import axios from "axios";
+import { revalidatePath } from "next/cache";
 
 // const BASE_URL = process.env.API_URL;
 const BASE_URL = process.env.API_URL_LOCAL;
 
 const QUERY_CARDS = {
-  GET_CARDS: "/api/CardType",
-  GET_CARDS_TYPE: "/api/CardType",
+  GET_CARDS: "/api/v1/CardTypes",
+  GET_CARDS_TYPE: "/api/v1/CardTypes",
+  CREATE_CARD: "/api/v1/CardTypes",
+  UPDATE_CARD: "/api/v1/CardTypes",
+  DELETE_CARD: "/api/v1/CardTypes",
 };
 
 /**
  * Get the cards
  */
-export async function getCardsType() {
+export async function getCardsType(pageIndex, pageSize) {
   try {
-    const res = await axios.get(`${BASE_URL}${QUERY_CARDS.GET_CARDS}`);
+    const res = await axios.get(
+      `${BASE_URL}${QUERY_CARDS.GET_CARDS}?PageIndex=${pageIndex}&PageSize=${pageSize}`
+    );
 
     const data = res.data.data;
 
@@ -26,17 +32,44 @@ export async function getCardsType() {
   }
 }
 
-export async function getCardTypeID(id) {
+export async function createCardType(cardType) {
   try {
-    const res = await axios.get(
-      `${BASE_URL}${QUERY_CARDS.GET_CARDS_TYPE}${id}`
+    const res = await axios.post(
+      `${BASE_URL}${QUERY_CARDS.CREATE_CARD}`,
+      cardType
     );
-
-    const data = res.data.data;
-
-    return { data: data };
+    revalidatePath("/cardtype-manage");
+    return res.data;
   } catch (error) {
     console.log(error);
-    return { error: error.message || "Có lỗi xảy ra !!!" };
+    return [];
+  }
+}
+export async function updateCardType(cardType, id) {
+  try {
+    const res = await axios.put(
+      `${BASE_URL}${QUERY_CARDS.UPDATE_CARD}?key=${id}`,
+      cardType
+    );
+
+    revalidatePath("/cardtype-manage");
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+
+export async function deleteCardType(id) {
+  try {
+    const res = await axios.delete(
+      `${BASE_URL}${QUERY_CARDS.DELETE_CARD}/${id}`
+    );
+
+    revalidatePath("/cardtype-manage");
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return [];
   }
 }

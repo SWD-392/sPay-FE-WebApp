@@ -6,7 +6,6 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Box, CircularProgress, Pagination, Stack } from "@mui/material";
 
 const CardTypePagination = ({ cardTypes }) => {
-  console.log("cardTypes", cardTypes);
   const [loading, setLoading] = useState(true); // add loading state
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -20,15 +19,14 @@ const CardTypePagination = ({ cardTypes }) => {
     },
     [searchParams]
   );
-
   const page = searchParams.get("page");
   const [currentPage, setCurrentPage] = useState(page ?? 1);
 
-  console.log(searchParams);
+  // console.log(searchParams);
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
-    const queryString = createQueryString(value, 5);
+    const queryString = createQueryString(value, 6);
     router.push(pathname + "?" + queryString);
     setLoading(true);
   };
@@ -53,7 +51,7 @@ const CardTypePagination = ({ cardTypes }) => {
   }
   return (
     <div>
-      <CardTypeTable cardTypes={cardTypes} />
+      <CardTypeTable cardTypes={cardTypes.items} />
       <Stack
         spacing={2}
         style={{

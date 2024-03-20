@@ -61,7 +61,7 @@ const PaginationComponent = ({ stores, cardType, storeCategory }) => {
     <div>
       <TableView
         storeData={stores.items}
-        storeCategory={storeCategory}
+        storeCategory={storeCategory.items}
         loading={loading}
       />
       <Stack

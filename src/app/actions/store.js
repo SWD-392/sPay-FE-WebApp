@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 const BASE_URL = process.env.API_URL_LOCAL;
 
 const QUERY_STORE = {
-  GET_STORES: "/api/Store",
+  GET_STORES: "/api/v1/Stores",
   GET_STORES_BY_SEARCH: "/api/Store/get-all",
   CREATE_STORE: "/api/Store",
   DELETE_STORE: "/api/Store",

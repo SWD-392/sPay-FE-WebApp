@@ -1,4 +1,3 @@
-import { getStoreCategory } from "@/app/actions";
 import { getPromotions } from "@/app/actions/promotion";
 import PromotionCompo from "@/components/page-components/promotion-components/content";
 import { Box, CircularProgress } from "@mui/material";

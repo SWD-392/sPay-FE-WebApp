@@ -29,7 +29,7 @@ const PaginationComponentUser = ({
   const page = searchParams.get("page");
   const [currentPage, setCurrentPage] = useState(page ?? 1);
 
-  console.log(searchParams);
+  // console.log(searchParams);
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
