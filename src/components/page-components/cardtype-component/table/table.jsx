@@ -135,7 +135,7 @@ const CardTypeTable = ({ cardTypes }) => {
                 <TableCell>{row.cardTypeName}</TableCell>
                 <TableCell>{row.typeDescription}</TableCell>
                 <TableCell>
-                  {row.withdrawalAllowed ? "Được" : "Không"}
+                  {row.withdrawalAllowed ? "Cho phép" : "Không cho phép"}
                 </TableCell>
                 <TableCell>
                   <IconButton onClick={() => handleRowClick(row)}>

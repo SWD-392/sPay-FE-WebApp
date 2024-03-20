@@ -18,10 +18,13 @@ import {
 } from "@mui/material";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { getCardTypeID } from "@/app/actions/card-type";
-const PromotionCompo = ({ promotions, storeCate }) => {
+import { toast } from "react-toastify";
+import { createPromotion } from "@/app/actions";
+const PromotionCompo = ({ promotions }) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [inputsChanged, setInputsChanged] = useState(false);
 
   const statusMenu = [
     { value: 1, label: "Active" },
@@ -75,60 +78,34 @@ const PromotionCompo = ({ promotions, storeCate }) => {
   }));
 
   const [newPromotionData, setNewPromotionData] = useState({
-    cardTypeKey: "",
-    cardNumber: "",
-    numberDate: 0,
-    name: "",
+    packageName: "",
     description: "",
+    valueUsed: 0,
     discountPercentage: 0,
     price: 0,
-    moneyValue: 0,
+    numberDate: 0,
+    withdrawAllowed: true,
   });
 
   const handleAddInputChange = (e) => {
     const { name, value } = e.target;
+    let parsedValue = value;
+    // Parse to number if the input is for 'numberDate'
+
+    if (name === "numberDate") {
+      parsedValue = parseInt(value, 10);
+    }
+
     setNewPromotionData({
       ...newPromotionData,
-      [name]: value,
+      [name]: parsedValue,
     });
-  };
-  useEffect(() => {
-    console.log("new promotiondata", newPromotionData);
-  }, [newPromotionData]);
 
-  useEffect(() => {
-    const { moneyValue, discountPercentage } = newPromotionData;
-    const price = moneyValue - (moneyValue * discountPercentage) / 100;
-
-    setNewPromotionData((prevState) => ({
-      ...prevState,
-      price,
-    }));
-  }, [newPromotionData.moneyValue, newPromotionData.discountPercentage]);
-
-  //add store
-  const handleAddPromotion = async () => {
-    try {
-      console.log(newPromotionData);
-      const response = await fetch("/api/stores", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newStoreData),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to add store");
-      }
-      // Xử lý thành công, đóng dialog hoặc thực hiện các thao tác khác
-      handleClose();
-    } catch (error) {
-      console.error("Error adding store:", error);
-      // Xử lý lỗi (hiển thị thông báo lỗi, v.v.)
+    if (name === "valueUsed" || name === "discountPercentage") {
+      setInputsChanged(true);
     }
   };
 
-  const [loading, setLoading] = useState(true); // add loading state
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -145,61 +122,48 @@ const PromotionCompo = ({ promotions, storeCate }) => {
   const page = searchParams.get("page");
   const [currentPage, setCurrentPage] = useState(page ?? 1);
 
-  console.log(searchParams);
-
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
     const queryString = createQueryString(value, 6);
     router.push(pathname + "?" + queryString);
-    setLoading(true);
   };
+
   useEffect(() => {
-    if (promotions) {
-      setLoading(false);
+    if (open && inputsChanged) {
+      const { valueUsed, discountPercentage } = newPromotionData;
+      const price = valueUsed - (valueUsed * discountPercentage) / 100;
+
+      setNewPromotionData((prevState) => ({
+        ...prevState,
+        price,
+      }));
+
+      setInputsChanged(false);
     }
-  }, [promotions]);
+  }, [open, inputsChanged]);
 
-  const [cardTypeKey, setCardTypeKey] = useState([]);
+  //add promotion
+  const handleAddPromotion = async (formJson) => {
+    console.log("formJson", formJson);
+    console.log(newPromotionData);
+    const promotion = {
+      packageName: newPromotionData.packageName,
+      description: newPromotionData.description,
+      numberDate: newPromotionData.numberDate,
+      valueUsed: newPromotionData.valueUsed,
+      discountPercentage: newPromotionData.discountPercentage,
+      price: newPromotionData.price,
+      withdrawAllowed: newPromotionData.withdrawAllowed,
+    };
 
-  const handleStoreCateTypeChange = async (event) => {
-    const storeCate = event.target.value;
-    // call the getCardType(id)
-    console.log("storecate", storeCate);
-    try {
-      const result = await getCardTypeID(storeCate);
-      // use the result here
-      const cardTypeKeyss = result.data;
-      setCardTypeKey(cardTypeKeyss);
-    } catch (error) {
-      console.error(error);
+    const res = await createPromotion(promotion);
+    if (res) {
+      toast.success("Thêm gói thành công");
+      handleClose();
+    } else {
+      toast.error("Thêm gói thất bại");
     }
   };
-
-  const handleAddCard = async () => {
-    createStore(newPromotionData)
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  if (loading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "70vh",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
-    // render loading message if loading is true
-  }
 
   return (
     <div>
@@ -230,41 +194,35 @@ const PromotionCompo = ({ promotions, storeCate }) => {
             // const email = formJson.email;
             // console.log(email);
             // handleSave(formJson);
-            if (!formJson.name) {
-              alert("Vui lòng nhập tên gói");
+            if (!formJson.packageName) {
+              toast.error("Vui lòng nhập tên gói");
               return;
             }
 
             if (!formJson.description) {
-              alert("Vui lòng nhập mô tả ");
-              return;
-            }
-
-            if (!formJson.storeCate) {
-              alert("Vui lòng chọn loại cửa hàng ");
-              return;
-            }
-
-            if (!formJson.cardTypeKey) {
-              alert("Vui lòng chọn loại card ");
+              toast.error("Vui lòng nhập mô tả ");
               return;
             }
 
             if (!formJson.numberDate || isNaN(formJson.numberDate)) {
-              alert("Vui lòng nhập số ngày hết hạn ");
+              toast.error("Vui lòng nhập số ngày hết hạn ");
               return;
             }
 
-            if (!formJson.moneyValue) {
-              alert("Vui lòng chọn giá trị gói");
+            if (!formJson.valueUsed) {
+              toast.error("Vui lòng chọn giá trị gói");
               return;
             }
             if (!formJson.discountPercentage) {
-              alert("Vui lòng chọn giá trị khuyến mãi");
+              toast.error("Vui lòng chọn giá trị khuyến mãi");
               return;
             }
-            handleAddCard();
-            handleClose();
+
+            if (!formJson.withdrawAllowed) {
+              toast.error("Vui lòng chọn trạng thái rút tiền");
+            }
+
+            handleAddPromotion(formJson);
           },
         }}
       >
@@ -274,8 +232,8 @@ const PromotionCompo = ({ promotions, storeCate }) => {
             autoFocus
             required
             margin="dense"
-            id="name"
-            name="name"
+            id="packageName"
+            name="packageName"
             label="Tên gói"
             type="text"
             fullWidth
@@ -297,7 +255,7 @@ const PromotionCompo = ({ promotions, storeCate }) => {
             // value={promotion.Date}
             onChange={handleAddInputChange}
           />
-          <TextField
+          {/* <TextField
             autoFocus
             required
             margin="dense"
@@ -310,14 +268,15 @@ const PromotionCompo = ({ promotions, storeCate }) => {
             // value={promotion.Promotion}
             onChange={handleStoreCateTypeChange}
           >
-            {storeCate.map((item) => (
-              <MenuItem
-                key={item.storeCategoryKey}
-                value={item.storeCategoryKey}
-              >
-                {item.storeCategoryName}
-              </MenuItem>
-            ))}
+            {storeCate &&
+              storeCate.items.map((item) => (
+                <MenuItem
+                  key={item.storeCategoryKey}
+                  value={item.storeCategoryKey}
+                >
+                  {item.storeCategoryName}
+                </MenuItem>
+              ))}
           </TextField>
           <TextField
             autoFocus
@@ -338,7 +297,7 @@ const PromotionCompo = ({ promotions, storeCate }) => {
                   {item.cardTypeName}
                 </MenuItem>
               ))}
-          </TextField>
+          </TextField> */}
 
           <TextField
             autoFocus
@@ -358,8 +317,8 @@ const PromotionCompo = ({ promotions, storeCate }) => {
             autoFocus
             required
             margin="dense"
-            id="moneyValue"
-            name="moneyValue"
+            id="valueUsed"
+            name="valueUsed"
             label="Giá trị gói"
             fullWidth
             select
@@ -369,7 +328,7 @@ const PromotionCompo = ({ promotions, storeCate }) => {
           >
             {moneyValueMapping.map((item) => (
               <MenuItem key={item.value} value={item.value}>
-                {item.label}đ
+                {item.label}
               </MenuItem>
             ))}
           </TextField>
@@ -407,6 +366,21 @@ const PromotionCompo = ({ promotions, storeCate }) => {
             value={newPromotionData.price}
             onChange={handleAddInputChange}
           />
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="withdrawAllowed"
+            name="withdrawAllowed"
+            select
+            label="Rút tiền"
+            fullWidth
+            // value={data.withdrawAllowed}
+            onChange={handleAddInputChange}
+          >
+            <MenuItem value={true}>Được phép</MenuItem>
+            <MenuItem value={false}>Không được phép</MenuItem>
+          </TextField>
           {/* <TextField
             autoFocus
             required

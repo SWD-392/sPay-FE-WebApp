@@ -26,6 +26,8 @@ import styles from "./table.module.css";
 import { getCardTypeID } from "@/app/actions/card-type";
 import CardUser from "./card/card";
 import { toast } from "react-toastify";
+import NotInterestedIcon from "@mui/icons-material/NotInterested";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
   const [open, setOpen] = useState(false);
@@ -41,8 +43,16 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
   const handleConfirmOpen = () => setConfirmOpen(true);
 
   const statusMenu = [
-    { value: 1, label: "Đang hoạt động" },
-    { value: 2, label: "Ngưng hoạt động" },
+    {
+      value: 1,
+      label: "Đang hoạt động",
+      icon: <CheckCircleIcon color="success" />,
+    },
+    {
+      value: 2,
+      label: "Ngưng hoạt động",
+      icon: <NotInterestedIcon color="error" />,
+    },
   ];
 
   const handleMapData = (value, fieldName) => {
@@ -68,11 +78,11 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
         value // Ánh xạ giá trị status sang văn bản tương ứng
       ) {
         case 1:
-          return statusMenu[0].label;
+          return statusMenu[0].icon;
         case 2:
-          return statusMenu[1].label;
+          return statusMenu[1].icon;
         case 3:
-          return statusMenu[2].label;
+          return statusMenu[2].icon;
         default:
           return value;
       }
@@ -121,7 +131,7 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
               <TableCell>Tổng card</TableCell>
               <TableCell>Số dư</TableCell>
               <TableCell>Trạng thái</TableCell>
-              <TableCell>Thêm gói</TableCell>
+              <TableCell>Xem chi tiết</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

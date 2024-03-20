@@ -22,7 +22,7 @@ export async function getCardsType() {
     return { data: data };
   } catch (error) {
     console.log(error);
-    return [];
+    return { error: error.message || "Có lỗi xảy ra !!!" };
   }
 }
 
@@ -37,6 +37,6 @@ export async function getCardTypeID(id) {
     return { data: data };
   } catch (error) {
     console.log(error);
-    return [];
+    return { error: error.message || "Có lỗi xảy ra !!!" };
   }
 }

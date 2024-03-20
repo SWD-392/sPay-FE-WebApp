@@ -1,6 +1,8 @@
 "use client";
 
+import { deletePromotion, updatePromotion } from "@/app/actions";
 import {
+  Box,
   Button,
   Card,
   CardActions,
@@ -14,7 +16,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const CardPromotion = ({ promotion }) => {
   const [open, setOpen] = useState(false);
@@ -24,9 +28,22 @@ const CardPromotion = ({ promotion }) => {
     setOpen(true); // Open the ButtonAdd component
   };
 
-  const handleEditInputChange = (e) => {
-    const { name, value } = e.target;
-    setData({ ...data, [name]: value });
+  const notify = (message) => {
+    toast.error(message, {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
+
+  const handleEditInputChange = (event) => {
+    const { name, value } = event.target;
+    setData((prev) => ({ ...prev, [name]: value }));
   };
 
   const StatusEnum = {
@@ -60,45 +77,165 @@ const CardPromotion = ({ promotion }) => {
     // });
   };
 
+  const moneyValueSelecting = {
+    Value_100k: {
+      value: 100000,
+      label: "100.000",
+    },
+    Value_200k: {
+      value: 200000,
+      label: "200.000",
+    },
+    Value_300k: {
+      value: 300000,
+      label: "300.000",
+    },
+    Value_400k: {
+      value: 400000,
+      label: "400.000",
+    },
+    Value_500k: {
+      value: 500000,
+      label: "500.000",
+    },
+  };
+
+  const moneyValueMapping = Object.keys(moneyValueSelecting).map((key) => ({
+    key,
+    ...moneyValueSelecting[key],
+  }));
+
+  const discountSelecting = {
+    Discount_5: { value: 5, label: "5%" },
+    Discount_7: { value: 7, label: "7%" },
+    Discount_9: { value: 9, label: "9%" },
+    Discount_11: { value: 11, label: "11%" },
+    Discount_13: { value: 13, label: "13%" },
+    Discount_15: { value: 15, label: "15%" },
+  };
+
+  const discountMapping = Object.keys(discountSelecting).map((key) => ({
+    key,
+    ...discountSelecting[key],
+  }));
+
+  useEffect(() => {
+    const price =
+      data.valueUsed - (data.valueUsed * data.discountPercentage) / 100;
+    setData((prevState) => ({ ...prevState, price }));
+  }, []);
+
+  const handleAddInputChange = (e) => {
+    const { name, value } = e.target;
+
+    let updatedData = {
+      ...data,
+      [name]: value,
+    };
+
+    if (name === "valueUsed" || name === "discountPercentage") {
+      const price =
+        updatedData.valueUsed -
+        (updatedData.valueUsed * updatedData.discountPercentage) / 100;
+      updatedData = {
+        ...updatedData,
+        price,
+      };
+    }
+
+    setData(updatedData);
+  };
+
+  useEffect(() => {
+    const { valueUsed, discountPercentage } = data;
+    const price = valueUsed - (valueUsed * discountPercentage) / 100;
+
+    setData((prevState) => ({
+      ...prevState,
+      price,
+    }));
+  }, [data.valueUsed, data.discountPercentage]);
+
+  //update promotion package
+  const handleEditPromotion = async (formJson, promotionPackageKey) => {
+    const promotion = {
+      packageName: data.packageName,
+      description: data.description,
+      numberDate: data.numberDate,
+      valueUsed: data.valueUsed,
+      discountPercentage: data.discountPercentage,
+      price: data.price,
+      withdrawAllowed: data.withdrawAllowed,
+    };
+    const res = await updatePromotion(promotion, promotionPackageKey);
+
+    if (res) {
+      toast.success("Update promotion success");
+    } else {
+      console.log("Update promotion failed");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const res = await deletePromotion(id);
+      if (res) {
+        toast.success("Xoá thành công!");
+      } else {
+        console.log("Delete promotion failed");
+      }
+    } catch (error) {
+      console.error("An error occurred while deleting the promotion:", error);
+    }
+  };
+
   return (
     <>
       <Card sx={{ minWidth: 300, maxWidth: 300, minHeight: 450 }}>
         <CardContent>
           <Typography sx={{ fontSize: 26 }} color="text.primary" gutterBottom>
-            {data.cardName}
+            {promotion.packageName}
           </Typography>
           {/* <Typography variant="h5" component="div"></Typography> */}
 
           <Typography sx={{ mb: 1.5, fontSize: 14 }}>
-            Ngày tạo gói: {data.insDate}
-          </Typography>
-          <Typography sx={{ mb: 1.5, fontSize: 14 }}>
-            Thời hạn: {data.dateNumber} ngày
+            Thời hạn: {promotion.numberDate} ngày
           </Typography>
           <Typography variant="body2">
-            <Typography sx={{ mb: 1.5 }}>
-              Chi tiết gói khuyến mãi: {data.description}
-            </Typography>
-            Giá bán gói: {data.price} VND
+            Chi tiết gói khuyến mãi: {promotion.description}
+          </Typography>
+          <Typography variant="body2">
+            Giá bán gói: {promotion.price} VND
           </Typography>
 
           <Typography variant="body2">
-            Số tiền khách dùng: {data.moneyValue} VND
+            Giá trị gói: {promotion.valueUsed} VND
           </Typography>
 
           <Typography variant="body2">
-            Phần trăm khuyến mãi: {data.discountPercentage}%
+            Phần trăm khuyến mãi: {promotion.discountPercentage}%
           </Typography>
-          <Typography variant="body2">Loại thẻ: {data.cardTypeName}</Typography>
-          <Typography sx={{ mb: 1.5 }}>
-            Trạng thái: {data.status === 1 ? "Hoạt động" : "Không hoạt động"}
+          <Typography variant="body2">
+            Rút tiền:{" "}
+            {promotion.withdrawAllowed ? "Cho phép" : "Không cho phép"}
           </Typography>
         </CardContent>
-        <CardActions>
-          <Button size="small" onClick={() => handleEdit(data)}>
-            Tuỳ Chỉnh
-          </Button>
-        </CardActions>
+        <Box style={{ display: "flex", justifyContent: "space-between" }}>
+          <CardActions>
+            <Button size="small" onClick={() => handleEdit(data)}>
+              Tuỳ Chỉnh
+            </Button>
+          </CardActions>
+          <CardActions>
+            <Button
+              color="error"
+              size="small"
+              onClick={() => handleDelete(promotion.promotionPackageKey)}
+            >
+              Xoá
+            </Button>
+          </CardActions>
+        </Box>
       </Card>
       <Dialog
         open={open}
@@ -112,6 +249,35 @@ const CardPromotion = ({ promotion }) => {
             // const email = formJson.email;
             // console.log(email);
             // handleSave(formJson);
+            console.log(formJson);
+            if (!formJson.packageName) {
+              notify("Vui lòng nhập tên gói");
+              return;
+            }
+            if (!formJson.description) {
+              notify("Vui lòng nhập mô tả gói");
+              return;
+            }
+
+            if (!formJson.numberDate || isNaN(formJson.numberDate)) {
+              notify("Vui lòng nhập thời hạn gói");
+              return;
+            }
+
+            if (!formJson.valueUsed) {
+              notify("Vui lòng chọn giá trị gói");
+              return;
+            }
+            if (!formJson.discountPercentage) {
+              notify("Vui lòng chọn phần trăm khuyến mãi");
+              return;
+            }
+
+            if (!formJson.withdrawAllowed) {
+              notify("Vui lòng chọn quyền rút tiền");
+              return;
+            }
+            handleEditPromotion(formJson, data.promotionPackageKey);
             handleClose();
           },
         }}
@@ -122,13 +288,13 @@ const CardPromotion = ({ promotion }) => {
             autoFocus
             required
             margin="dense"
-            id="cardName"
-            name="cardName"
+            id="packageName"
+            name="packageName"
             label="Tên gói"
             type="text"
             fullWidth
             variant="standard"
-            value={promotion.cardName}
+            value={data.packageName}
             onChange={handleEditInputChange}
           />
 
@@ -142,7 +308,7 @@ const CardPromotion = ({ promotion }) => {
             type="text"
             fullWidth
             variant="standard"
-            value={promotion.description}
+            value={data.description}
             onChange={handleEditInputChange}
           />
 
@@ -150,13 +316,13 @@ const CardPromotion = ({ promotion }) => {
             autoFocus
             required
             margin="dense"
-            id="dateNumber"
-            name="dateNumber"
+            id="numberDate"
+            name="numberDate"
             label="Thời hạn(ngày)"
-            type="text"
+            type="number"
             fullWidth
             variant="standard"
-            value={data.dateNumber}
+            value={data.numberDate}
             onChange={handleEditInputChange}
           />
 
@@ -164,37 +330,52 @@ const CardPromotion = ({ promotion }) => {
             autoFocus
             required
             margin="dense"
-            id="amount"
-            name="amount"
+            id="valueUsed"
+            name="valueUsed"
+            label="Giá trị gói"
+            type="number"
+            fullWidth
+            select
+            variant="standard"
+            value={data.valueUsed}
+            onChange={handleEditInputChange}
+          >
+            {moneyValueMapping.map((item) => (
+              <MenuItem key={item.value} value={item.value}>
+                {item.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="discountPercentage"
+            name="discountPercentage"
+            label="Khuyến mãi"
+            fullWidth
+            variant="standard"
+            select
+            value={data.discountPercentage}
+            onChange={handleEditInputChange}
+          >
+            {discountMapping.map((item) => (
+              <MenuItem key={item.value} value={item.value}>
+                {item.label}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="price"
+            name="price"
             label="Giá bán gói"
             type="number"
             fullWidth
-            variant="standard"
-            value={data.price}
-            onChange={handleEditInputChange}
-          />
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="price"
-            name="price"
-            label="Số tiền khách dùng"
-            type="number"
-            fullWidth
-            variant="standard"
-            value={data.moneyValue}
-            onChange={handleEditInputChange}
-          />
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="price"
-            name="price"
-            label="Số tiền khách dùng"
-            type="number"
-            fullWidth
+            disabled
             variant="standard"
             value={data.price}
             onChange={handleEditInputChange}
@@ -204,27 +385,22 @@ const CardPromotion = ({ promotion }) => {
             autoFocus
             required
             margin="dense"
-            id="status"
-            name="status"
+            id="withdrawAllowed"
+            name="withdrawAllowed"
             select
-            label="Trạng thái gói"
+            label="Rút tiền"
             fullWidth
-            value={data.status}
-            onChange={handleChangeCateValue}
+            value={data.withdrawAllowed}
+            onChange={handleEditInputChange}
           >
-            {statusArray.map((status) => (
-              <MenuItem key={status.value} value={status.value}>
-                {status.label}
-              </MenuItem>
-            ))}
+            <MenuItem value={true}>Được phép</MenuItem>
+            <MenuItem value={false}>Không được phép</MenuItem>
           </TextField>
         </DialogContent>
 
         <DialogActions>
           <Button onClick={handleClose}>Hủy</Button>
-          <Button type="submit" onClick={handleSave}>
-            Chỉnh sửa
-          </Button>
+          <Button type="submit">Chỉnh sửa</Button>
         </DialogActions>
       </Dialog>
     </>

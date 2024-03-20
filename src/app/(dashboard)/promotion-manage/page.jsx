@@ -8,8 +8,6 @@ export default async function PromotionManage({ searchParams }) {
   const page = searchParams.page;
   const perpage = searchParams.per_page;
 
-  const storeCate = await getStoreCategory();
-
   const promotions = await getPromotions(page ?? "1", perpage ?? "6");
 
   return (
@@ -25,15 +23,11 @@ export default async function PromotionManage({ searchParams }) {
               minHeight: "70vh",
             }}
           >
-            {" "}
             <CircularProgress />
           </Box>
         }
       >
-        <PromotionCompo
-          promotions={promotions.data}
-          storeCate={storeCate.data}
-        />
+        <PromotionCompo promotions={promotions.data} />
       </Suspense>
     </div>
   );

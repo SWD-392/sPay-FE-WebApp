@@ -11,7 +11,7 @@ const QUERY_STORE = {
   GET_STORES_BY_SEARCH: "/api/Store/get-all",
   CREATE_STORE: "/api/Store",
   DELETE_STORE: "/api/Store",
-  GET_STORE_CATEGORY: "/api/StoreCategory",
+  GET_STORE_CATEGORY: "/api/v1/StoreCategories",
 };
 
 /**

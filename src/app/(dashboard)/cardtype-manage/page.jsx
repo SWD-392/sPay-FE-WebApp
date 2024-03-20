@@ -10,7 +10,7 @@ export default async function CardType({ searchParams }) {
 
   //   cardTypes={cardTypes.data}
 
-  console.log(cardTypes.data);
+  console.log(cardTypes.data || cardTypes.error);
 
   return (
     <div>

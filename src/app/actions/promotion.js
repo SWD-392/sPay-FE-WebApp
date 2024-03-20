@@ -7,8 +7,10 @@ import { revalidatePath } from "next/cache";
 const BASE_URL = process.env.API_URL_LOCAL;
 
 const QUERY_PROMOTION = {
-  GET_PROMOTIONS: "/api/Card",
-  CREATE_PROMOTION: "/api/Card",
+  GET_PROMOTIONS: "/api/v1/PromotionPackages",
+  CREATE_PROMOTION: "/api/v1/PromotionPackages",
+  UPDATE_PROMOTION: "/api/v1/PromotionPackages",
+  DELETE_PROMOTION: "/api/v1/PromotionPackages",
 };
 
 /**
@@ -49,9 +51,40 @@ export async function createPromotion(promotion) {
       promotion
     );
     revalidatePath("/promotion-manage");
-    return res;
+    return res.data;
   } catch (error) {
     console.log(error);
     return [];
+  }
+}
+
+export async function updatePromotion(promotion, id) {
+  try {
+    const res = await axios.put(
+      `${BASE_URL}${QUERY_PROMOTION.UPDATE_PROMOTION}?key=${id}`,
+      promotion
+    );
+    revalidatePath("/promotion-manage");
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+
+export async function deletePromotion(id) {
+  try {
+    const res = await axios.delete(
+      `${BASE_URL}${QUERY_PROMOTION.DELETE_PROMOTION}/${id}`
+    );
+    if (res.status !== 200) {
+      console.error("Failed to delete promotion:", res);
+      return false;
+    }
+    revalidatePath("/promotion-manage");
+    return res.data;
+  } catch (error) {
+    console.error("An error occurred while deleting the promotion:", error);
+    return false;
   }
 }
