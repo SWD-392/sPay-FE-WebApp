@@ -31,6 +31,30 @@ export async function getPromotions(pageIndex, pageSize) {
   }
 }
 
+export async function getPromotion() {
+  try {
+    const res = await axios.get(`${BASE_URL}${QUERY_PROMOTION.GET_PROMOTIONS}`);
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+
+export async function getPromotionById(id) {
+  try {
+    const res = await axios.get(
+      `${BASE_URL}${QUERY_PROMOTION.GET_PROMOTIONS}/${id}`
+    );
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+
 export async function getPromotionForUser() {
   try {
     const res = await axios.get(`${BASE_URL}${QUERY_PROMOTION.GET_PROMOTIONS}`);

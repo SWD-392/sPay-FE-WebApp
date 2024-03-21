@@ -7,8 +7,8 @@ import { revalidatePath } from "next/cache";
 const BASE_URL = process.env.API_URL_LOCAL;
 
 const QUERY_CARDS = {
-  GET_CARDS: "/api/v1/CardTypes",
-  GET_CARDS_TYPE: "/api/v1/CardTypes",
+  GET_CARD_TYPES: "/api/v1/CardTypes",
+  GET_CARD_TYPES_TYPE: "/api/v1/CardTypes",
   CREATE_CARD: "/api/v1/CardTypes",
   UPDATE_CARD: "/api/v1/CardTypes",
   DELETE_CARD: "/api/v1/CardTypes",
@@ -20,7 +20,7 @@ const QUERY_CARDS = {
 export async function getCardsType(pageIndex, pageSize) {
   try {
     const res = await axios.get(
-      `${BASE_URL}${QUERY_CARDS.GET_CARDS}?PageIndex=${pageIndex}&PageSize=${pageSize}`
+      `${BASE_URL}${QUERY_CARDS.GET_CARD_TYPES}?PageIndex=${pageIndex}&PageSize=${pageSize}`
     );
 
     const data = res.data.data;
@@ -29,6 +29,31 @@ export async function getCardsType(pageIndex, pageSize) {
   } catch (error) {
     console.log(error);
     return { error: error.message || "Có lỗi xảy ra !!!" };
+  }
+}
+
+export async function getCardsTypeByStoreCate(storeCateKey) {
+  try {
+    const res = await axios.get(
+      `${BASE_URL}${QUERY_CARDS.GET_CARD_TYPES}?StoreCateKey=${storeCateKey}`
+    );
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return { error: error.message || "Có lỗi xảy ra !!!" };
+  }
+}
+
+export async function getCardType(id) {
+  try {
+    const res = await axios.get(
+      `${BASE_URL}${QUERY_CARDS.GET_CARD_TYPES_TYPE}/${id}`
+    );
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return [];
   }
 }
 
