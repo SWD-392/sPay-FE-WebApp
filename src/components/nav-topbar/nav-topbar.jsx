@@ -8,7 +8,6 @@ const Topbar = () => {
     <>
       <div className={styles.display}>
         <Logo />
-        <Search />
         <AvatarComponent />
       </div>
     </>

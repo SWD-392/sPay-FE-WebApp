@@ -2,9 +2,13 @@
 
 import { Box, CircularProgress, Pagination, Stack } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
-import { set } from "react-hook-form";
 import UserTable from "../table";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 
 const PaginationComponentUser = ({
   users,
@@ -17,7 +21,7 @@ const PaginationComponentUser = ({
   const router = useRouter();
   const pathname = usePathname();
   const createQueryString = useCallback(
-    (page, per_page) => {
+    (page, per_page, search) => {
       const params = new URLSearchParams(searchParams.toString());
       params.set("page", page);
       params.set("per_page", per_page);
@@ -29,9 +33,7 @@ const PaginationComponentUser = ({
   const page = searchParams.get("page");
   const [currentPage, setCurrentPage] = useState(page ?? 1);
 
-  // console.log(searchParams);
-
-  const handlePageChange = (event, value) => {
+  const handlePageChange = (value) => {
     setCurrentPage(value);
     const queryString = createQueryString(value, 5);
     router.push(pathname + "?" + queryString);
@@ -55,7 +57,8 @@ const PaginationComponentUser = ({
       >
         <CircularProgress />
       </Box>
-    ); // render loading message if loading is true
+    );
+    // render loading message if loading is true
   }
   return (
     <div>
@@ -69,7 +72,7 @@ const PaginationComponentUser = ({
         <Pagination
           page={currentPage}
           count={users.totalPages}
-          onChange={handlePageChange}
+          onChange={(event, page) => handlePageChange(page)}
         />
       </Stack>
     </div>

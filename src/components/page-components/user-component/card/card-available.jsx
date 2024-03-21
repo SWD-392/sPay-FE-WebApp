@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import React from "react";
 
-const CardUser = ({ data, onChoose }) => {
+const CardAvailable = ({ data, onChoose }) => {
   return (
     <div style={{}}>
       <Card sx={{ minWidth: 250, maxWidth: 250, minHeight: 250 }}>
@@ -33,14 +33,14 @@ const CardUser = ({ data, onChoose }) => {
           </Typography>
           <Typography variant="body2">Loại thẻ: {data.cardTypeName}</Typography>
         </CardContent>
-        {/* <CardActions>
+        <CardActions>
           <Button size="small" onClick={onChoose}>
             Chọn gói
           </Button>
-        </CardActions> */}
+        </CardActions>
       </Card>
     </div>
   );
 };
 
-export default CardUser;
+export default CardAvailable;

@@ -32,6 +32,17 @@ export async function getCardsType(pageIndex, pageSize) {
   }
 }
 
+export async function getAllCardsType() {
+  try {
+    const res = await axios.get(`${BASE_URL}${QUERY_CARDS.GET_CARD_TYPES}`);
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return { error: error.message || "Có lỗi xảy ra !!!" };
+  }
+}
+
 export async function getCardsTypeByStoreCate(storeCateKey) {
   try {
     const res = await axios.get(

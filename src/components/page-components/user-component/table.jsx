@@ -21,19 +21,27 @@ import {
 
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./table.module.css";
-import { getCardTypeID } from "@/app/actions/card-type";
+import { getCardTypeID, getCardsTypeByStoreCate } from "@/app/actions";
 import CardUser from "./card/card";
 import { toast } from "react-toastify";
 import NotInterestedIcon from "@mui/icons-material/NotInterested";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import { RemoveRedEye } from "@mui/icons-material";
+import CardAvailable from "./card/card-available";
 
 const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
   const [open, setOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const [openAddCard, setOpenAddCard] = useState(false);
+  const handleOpenAddCard = () => setOpenAddCard(true);
+  const handleCloseAddCard = () => setOpenAddCard(false);
+
   const handleRowClick = (row) => {
     setSelectedData(row); // Store the selected row data
     setOpen(true); // Open the ButtonAdd component
@@ -91,14 +99,15 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
     return value; // Replace with your mapped value
   };
 
-  const [cardTypesSelect, setCardTypesSelect] = useState(cardTypes ?? []);
+  const [cardTypesSelect, setCardTypesSelect] = useState([]);
   const [isCardTypeDisabled, setIsCardTypeDisabled] = useState(true);
 
   const handleStoreTypeChange = async (event) => {
     const storeCategoryId = event.target.value;
     console.log(storeCategoryId);
-    const cardTypesData = await getCardTypeID(storeCategoryId);
-    setCardTypesSelect(cardTypesData.data);
+    const cardTypesData = await getCardsTypeByStoreCate(storeCategoryId);
+    console.log(cardTypesData.data.items);
+    setCardTypesSelect(cardTypesData.data.items);
     setIsCardTypeDisabled(false);
   };
 
@@ -126,11 +135,9 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
               {/* Define table headers based on your data structure */}
               <TableCell>No.</TableCell>
               <TableCell>Họ tên khách</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Địa chỉ</TableCell>
+              <TableCell>Số điện thoại</TableCell>
+
               <TableCell>Tổng card</TableCell>
-              <TableCell>Số dư</TableCell>
-              <TableCell>Trạng thái</TableCell>
               <TableCell>Xem chi tiết</TableCell>
             </TableRow>
           </TableHead>
@@ -140,17 +147,14 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
                 <TableRow key={row.customerKey}>
                   {/* Use map to display data in cells */}
                   <TableCell>{handleMapData(row.no, "col0")}</TableCell>
+                  <TableCell>{handleMapData(row.fullname, "col1")}</TableCell>
                   <TableCell>
-                    {handleMapData(row.customerName, "col1")}
+                    {handleMapData(row.phoneNumber, "col4")}
                   </TableCell>
-                  <TableCell>{handleMapData(row.email, "col2")}</TableCell>
-                  <TableCell>{handleMapData(row.address, "col3")}</TableCell>
-                  <TableCell>{handleMapData(row.numOfCards, "col4")}</TableCell>
-                  <TableCell>{handleMapData(row.balance, "col5")}</TableCell>
-                  <TableCell>{handleMapData(row.status, "col6")}</TableCell>
+                  <TableCell>{handleMapData(row.totalCard, "col4")}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleRowClick(row)}>
-                      <AddIcon color="primary" />
+                      <RemoveRedEye color="primary" />
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -158,6 +162,7 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
           </TableBody>
         </Table>
       </TableContainer>
+
       <Dialog
         open={open}
         onClose={handleClose}
@@ -175,58 +180,18 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
           },
         }}
       >
-        <DialogTitle>Thêm gói khuyến mãi cho người dùng</DialogTitle>
+        {/* các thẻ hiện sở hữu */}
+
+        <DialogTitle>Các thẻ của người dùng</DialogTitle>
+        <DialogActions>
+          <Button style={{ marginRight: "20px" }} onClick={handleOpenAddCard}>
+            Thêm thẻ
+          </Button>
+        </DialogActions>
         <DialogContent>
           {/* call storeCategory để hiển thị cho người dùng chọn
            */}
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="storeKey"
-            name="storeKey"
-            label="Loại cửa hàng"
-            type="text"
-            fullWidth
-            variant="standard"
-            // value={selectedData ? selectedData.customerName : ""}
-            select
-            onChange={handleStoreTypeChange}
-            //  chỗ này hiển thị các giá trị của storecate
-          >
-            {storeTypes.map((index) => (
-              <MenuItem
-                key={index.storeCategoryKey}
-                value={index.storeCategoryKey}
-              >
-                {index.storeCategoryName}
-              </MenuItem>
-            ))}
-          </TextField>
 
-          {/* đoạn này hiển thị cardtype để chọn */}
-
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="cardTypeKey"
-            name="cardTypeKey"
-            label="cardTypeName"
-            type="text"
-            fullWidth
-            variant="standard"
-            // value={selectedData ? selectedData.lastName : ""}
-            select
-            disabled={isCardTypeDisabled}
-            // chỗ này hiển thị các giá trị của cardtype
-          >
-            {/* {cardTypesSelect.map((index) => (
-              <MenuItem key={index.cardTypeKey} value={index.cardTypeKey}>
-                {index.cardTypeName}
-              </MenuItem>
-            ))} */}
-          </TextField>
           <Stack
             spacing={{ xs: 1, sm: 2 }}
             direction="row"
@@ -263,6 +228,119 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
 
         <DialogActions>
           <Button onClick={handleClose}>Hủy</Button>
+          {/* <Button type="submit">Thêm</Button> */}
+        </DialogActions>
+      </Dialog>
+
+      {/* Thêm thẻ cho người dùng */}
+      <Dialog
+        open={openAddCard}
+        onClose={handleCloseAddCard}
+        maxWidth="md"
+        PaperProps={{
+          component: "form",
+          onSubmit: (event) => {
+            event.preventDefault();
+            const formData = new FormData(event.currentTarget);
+            const formJson = Object.fromEntries(formData.entries());
+            // const email = formJson.email;
+            // console.log(email);
+            // handleSave(formJson);
+            handleCloseAddCard();
+          },
+        }}
+      >
+        <DialogTitle>Thêm gói khuyến mãi cho người dùng</DialogTitle>
+        <DialogContent>
+          {/* call storeCategory để hiển thị cho người dùng chọn
+           */}
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="storeKey"
+            name="storeKey"
+            label="Loại cửa hàng"
+            type="text"
+            fullWidth
+            variant="standard"
+            // value={selectedData ? selectedData.customerName : ""}
+            select
+            onChange={handleStoreTypeChange}
+            //  chỗ này hiển thị các giá trị của storecate
+          >
+            {storeTypes &&
+              storeTypes.items.map((index) => (
+                <MenuItem
+                  key={index.storeCategoryKey}
+                  value={index.storeCategoryKey}
+                >
+                  {index.categoryName}
+                </MenuItem>
+              ))}
+          </TextField>
+
+          {/* đoạn này hiển thị cardtype để chọn */}
+
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="cardTypeKey"
+            name="cardTypeKey"
+            label="cardTypeName"
+            type="text"
+            fullWidth
+            variant="standard"
+            // value={selectedData ? selectedData.lastName : ""}
+            select
+            disabled={isCardTypeDisabled}
+            // chỗ này hiển thị các giá trị của cardtype
+          >
+            {cardTypesSelect &&
+              cardTypesSelect.map((index) => (
+                <MenuItem key={index.cardTypeKey} value={index.cardTypeKey}>
+                  {index.cardTypeName}
+                </MenuItem>
+              ))}
+          </TextField>
+          <Stack
+            style={{ marginTop: "20px" }}
+            spacing={{ xs: 1, sm: 2 }}
+            direction="row"
+            useFlexGap
+            flexWrap="wrap"
+          >
+            {promotions &&
+              promotions.items.map((index) => {
+                return (
+                  <CardAvailable
+                    key={index.cardKey}
+                    data={index}
+                    onChoose={handleConfirmOpen}
+                  />
+                );
+              })}
+          </Stack>
+
+          {/* đoạn dưới này hiển thị các card để chọn */}
+          <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
+            <DialogTitle>Xác nhận</DialogTitle>
+            <DialogContent>Bạn có chắc chắn muốn chọn gói này?</DialogContent>
+            <DialogActions>
+              <Button onClick={() => setConfirmOpen(false)}>Hủy</Button>
+              <Button
+                // onClick={handleConfirm}
+                onClick={() => notifySuccess("Thêm gói thành công")}
+              >
+                Đồng ý
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleCloseAddCard}>Hủy</Button>
           {/* <Button type="submit">Thêm</Button> */}
         </DialogActions>
       </Dialog>
