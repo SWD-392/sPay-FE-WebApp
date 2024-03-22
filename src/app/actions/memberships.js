@@ -47,7 +47,6 @@ export async function createMemberships(data) {
       `${BASE_URL}${QUERY_MEMBERSHIP.CREATE_MEMBERSHIPS}`,
       data
     );
-
     return res;
   } catch (error) {
     console.log(error);

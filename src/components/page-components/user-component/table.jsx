@@ -37,12 +37,15 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { RemoveRedEye } from "@mui/icons-material";
 import CardAvailable from "./card/card-available";
 
-const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
+const UserTable = ({ data, storeTypes, cardTypes, promotions, cards }) => {
   const [open, setOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
   const [membership, setMembership] = useState({ items: [] });
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [selectedCardKey, setSelectedCardKey] = useState(null);
+  const [newMembership, setNewMembership] = useState(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const [openAddCard, setOpenAddCard] = useState(false);
   const handleOpenAddCard = () => setOpenAddCard(true);
@@ -55,20 +58,20 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
     setMembership(membershipData.data);
   };
 
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const handleConfirmOpen = async (userKey, cardKey) => {
+  const handleConfirmOpen = (cardKey) => {
+    setNewMembership({ cardKey: cardKey, userKey: selectedData.userKey });
     setConfirmOpen(true);
-    const data = { userKey, cardKey };
+  };
 
-    console.log(data);
+  const handleConfirm = async () => {
+    const res = await createMemberships(newMembership);
 
-    // const res = await createMemberships(data);
-
-    // if (res.data) {
-    //   toast.success("Thêm gói thành công");
-    // } else {
-    //   toast.error("Thêm gói thất bại");
-    // }
+    if (res) {
+      toast.success("Thêm gói thành công");
+      setConfirmOpen(false);
+    } else {
+      toast.error("Thêm gói thất bại");
+    }
   };
 
   const statusMenu = [
@@ -234,8 +237,8 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
             <DialogActions>
               <Button onClick={() => setConfirmOpen(false)}>Hủy</Button>
               <Button
-                // onClick={handleConfirm}
-                onClick={() => notifySuccess("Thêm gói thành công")}
+                onClick={handleConfirm}
+                // onClick={() => notifySuccess("Thêm gói thành công")}
               >
                 Đồng ý
               </Button>
@@ -276,8 +279,8 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
             useFlexGap
             flexWrap="wrap"
           >
-            {memberships &&
-              memberships.items.map((index) => {
+            {cards &&
+              cards.items.map((index) => {
                 return (
                   <CardAvailable
                     key={index.membershipKey}
@@ -294,10 +297,7 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
             <DialogContent>Bạn có chắc chắn muốn chọn gói này?</DialogContent>
             <DialogActions>
               <Button onClick={() => setConfirmOpen(false)}>Hủy</Button>
-              <Button
-                // onClick={handleConfirm}
-                onClick={() => notifySuccess("Thêm gói thành công")}
-              >
+              <Button onClick={() => handleConfirm(newMembership)}>
                 Đồng ý
               </Button>
             </DialogActions>

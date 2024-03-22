@@ -9,6 +9,7 @@ import { getPromotionForUser, getPromotions } from "@/app/actions/promotion";
 import Search from "@/components/nav-topbar/search/search";
 import { Box, CircularProgress } from "@mui/material";
 import axios from "axios";
+import { get } from "react-hook-form";
 
 export default async function UserManage(searchParams) {
   const page = searchParams.searchParams.page ?? 1;
@@ -43,6 +44,7 @@ export default async function UserManage(searchParams) {
           storeTypes={storeTypes.data}
           cardTypes={cardTypes.data}
           users={users.data}
+          cards={getAllCard.data}
         />
       </Suspense>
     </div>

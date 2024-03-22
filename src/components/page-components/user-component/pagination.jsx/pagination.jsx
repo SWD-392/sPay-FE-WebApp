@@ -15,6 +15,7 @@ const PaginationComponentUser = ({
   cardTypes,
   storeTypes,
   promotions,
+  cards,
 }) => {
   const [loading, setLoading] = useState(true); // add loading state
   const searchParams = useSearchParams();
@@ -67,6 +68,7 @@ const PaginationComponentUser = ({
         cardTypes={cardTypes}
         storeTypes={storeTypes}
         promotions={promotions}
+        cards={cards}
       />
       <Stack spacing={2} style={{ position: "fixed", bottom: 60, right: 200 }}>
         <Pagination
