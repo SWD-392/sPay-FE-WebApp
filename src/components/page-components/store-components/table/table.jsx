@@ -33,8 +33,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { set } from "react-hook-form";
 import ArrowDropUpSharpIcon from "@mui/icons-material/ArrowDropUpSharp";
 import ArrowDropDownSharpIcon from "@mui/icons-material/ArrowDropDownSharp";
+import WalletIcon from "@mui/icons-material/Wallet";
 import { createStore, deleteStore } from "@/app/actions";
 import { toast } from "react-toastify";
+import { createWithdrawInfo } from "@/app/actions/withdraw";
 
 function TableView({ storeData, storeCategory }) {
   const [data, setData] = useState(storeData);
@@ -110,7 +112,6 @@ function TableView({ storeData, storeCategory }) {
   // Save changes to API (you'll need to implement your backend logic)
 
   const categoriesIdMenu = storeCategory.map((category) => category);
-  console.log(categoriesIdMenu);
 
   const StatusEnum = {
     Active: { value: 1, description: "Đang hoạt động" },
@@ -184,7 +185,6 @@ function TableView({ storeData, storeCategory }) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  console.log(selectedData);
   const handleChangeCateValue = (event) => {
     setCateValue(event.target.value);
     setSelectedData({ ...selectedData, storeCategory: event.target.value });
@@ -197,6 +197,31 @@ function TableView({ storeData, storeCategory }) {
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [storeKeyToDelete, setStoreKeyToDelete] = useState(null);
+
+  const [openWithdraw, setOpenWithdraw] = useState(false);
+  const [withdrawData, setWithdrawData] = useState({});
+  const [userKey, setUserKey] = useState("");
+  const [balance, setBalance] = useState(0);
+  const handleWithdraw = (row) => {
+    setBalance(row.balance);
+    if (row.balance === 0) {
+      toast.error("Số dữ không khả dụng");
+      return;
+    }
+    setUserKey(row.userKey);
+    setWithdrawData({ userKey, totalAmount: 0 });
+    setOpenWithdraw(true);
+  };
+
+  const handleWithdrawSubmit = async () => {
+    const res = await createWithdrawInfo(withdrawData);
+    if (res) {
+      toast.success("Rút tiền thành công");
+      setOpenWithdraw(false);
+    } else {
+      toast.error("Rút tiền thất bại");
+    }
+  };
 
   return (
     <>
@@ -304,6 +329,7 @@ function TableView({ storeData, storeCategory }) {
                   ) : null}
                 </TableSortLabel>
               </TableCell>
+              <TableCell>Rút tiền</TableCell>
 
               <TableCell>Chỉnh sửa</TableCell>
               <TableCell>Xoá</TableCell>
@@ -322,6 +348,11 @@ function TableView({ storeData, storeCategory }) {
                 </TableCell>
                 <TableCell>{handleMapData(row.balance, "col7")}</TableCell>
                 {/* edit */}
+                <TableCell>
+                  <IconButton onClick={() => handleWithdraw(row)}>
+                    <WalletIcon />
+                  </IconButton>
+                </TableCell>
                 <TableCell>
                   <IconButton onClick={() => handleRowClick(row)}>
                     <EditIcon />
@@ -636,6 +667,38 @@ function TableView({ storeData, storeCategory }) {
             //  deleteStore(row.storeKey)
           >
             Đồng ý
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openWithdraw} onClose={() => setOpenWithdraw(false)}>
+        <DialogTitle>Rút tiền</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="totalAmount"
+            name="totalAmount"
+            label="Số tiền muốn rút"
+            type="number"
+            fullWidth
+            variant="standard"
+            value={withdrawData.totalAmount}
+            onChange={(e) =>
+              setWithdrawData({ ...withdrawData, totalAmount: e.target.value })
+            }
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenWithdraw(false)}>Hủy</Button>
+          <Button
+            onClick={() => {
+              handleWithdrawSubmit();
+              // console.log(withdrawData);
+            }}
+          >
+            Rút tiền
           </Button>
         </DialogActions>
       </Dialog>

@@ -160,12 +160,12 @@ function TableView({ orderData }) {
               </TableCell>
               <TableCell>
                 <TableSortLabel
-                  active={sortConfig.key === "fromCustomer"}
+                  active={sortConfig.key === "sender"}
                   direction={sortConfig.direction}
-                  onClick={() => requestSort("fromCustomer")}
+                  onClick={() => requestSort("sender")}
                 >
-                  Khách hàng
-                  {sortConfig.key === "fromCustomer" ? (
+                  Người gửi
+                  {sortConfig.key === "sender" ? (
                     sortConfig.direction === "ascending" ? (
                       <ArrowDropUpSharpIcon />
                     ) : (
@@ -176,12 +176,12 @@ function TableView({ orderData }) {
               </TableCell>
               <TableCell>
                 <TableSortLabel
-                  active={sortConfig.key === "toStore"}
+                  active={sortConfig.key === "receiver"}
                   direction={sortConfig.direction}
-                  onClick={() => requestSort("toStore")}
+                  onClick={() => requestSort("receiver")}
                 >
-                  Cửa hàng
-                  {sortConfig.key === "toStore" ? (
+                  Người nhận
+                  {sortConfig.key === "receiver" ? (
                     sortConfig.direction === "ascending" ? (
                       <ArrowDropUpSharpIcon />
                     ) : (
@@ -192,12 +192,12 @@ function TableView({ orderData }) {
               </TableCell>
               <TableCell>
                 <TableSortLabel
-                  active={sortConfig.key === "cardName"}
+                  active={sortConfig.key === "descriptionTrans"}
                   direction={sortConfig.direction}
-                  onClick={() => requestSort("cardName")}
+                  onClick={() => requestSort("descriptionTrans")}
                 >
-                  Loại card sử dụng
-                  {sortConfig.key === "cardName" ? (
+                  Nội dung
+                  {sortConfig.key === "descriptionTrans" ? (
                     sortConfig.direction === "ascending" ? (
                       <ArrowDropUpSharpIcon />
                     ) : (
@@ -208,12 +208,12 @@ function TableView({ orderData }) {
               </TableCell>
               <TableCell>
                 <TableSortLabel
-                  active={sortConfig.key === "orderDescription"}
+                  active={sortConfig.key === "descriptionDetails"}
                   direction={sortConfig.direction}
-                  onClick={() => requestSort("orderDescription")}
+                  onClick={() => requestSort("descriptionDetails")}
                 >
-                  Nội dung đơn
-                  {sortConfig.key === "orderDescription" ? (
+                  Chi tiết
+                  {sortConfig.key === "descriptionDetails" ? (
                     sortConfig.direction === "ascending" ? (
                       <ArrowDropUpSharpIcon />
                     ) : (
@@ -224,12 +224,12 @@ function TableView({ orderData }) {
               </TableCell>
               <TableCell>
                 <TableSortLabel
-                  active={sortConfig.key === "value"}
+                  active={sortConfig.key === "amount"}
                   direction={sortConfig.direction}
-                  onClick={() => requestSort("value")}
+                  onClick={() => requestSort("amount")}
                 >
                   Số tiền
-                  {sortConfig.key === "value" ? (
+                  {sortConfig.key === "amount" ? (
                     sortConfig.direction === "ascending" ? (
                       <ArrowDropUpSharpIcon />
                     ) : (
@@ -240,12 +240,12 @@ function TableView({ orderData }) {
               </TableCell>
               <TableCell>
                 <TableSortLabel
-                  active={sortConfig.key === "date"}
+                  active={sortConfig.key === "transactionDate"}
                   direction={sortConfig.direction}
-                  onClick={() => requestSort("date")}
+                  onClick={() => requestSort("transactionDate")}
                 >
-                  Ngày giao dịch
-                  {sortConfig.key === "date" ? (
+                  Thời gian giao dịch
+                  {sortConfig.key === "transactionDate" ? (
                     sortConfig.direction === "ascending" ? (
                       <ArrowDropUpSharpIcon />
                     ) : (
@@ -278,16 +278,18 @@ function TableView({ orderData }) {
                 <TableRow key={row.orderKey}>
                   <TableCell>{row.no}</TableCell>
                   {/* Use map to display data in cells */}
+                  <TableCell>{handleMapData(row.sender, "col1")}</TableCell>
+                  <TableCell>{handleMapData(row.receiver, "col2")}</TableCell>
                   <TableCell>
-                    {handleMapData(row.fromCustomer, "col1")}
+                    {handleMapData(row.descriptionTrans, "col3")}
                   </TableCell>
-                  <TableCell>{handleMapData(row.toStore, "col2")}</TableCell>
-                  <TableCell>{handleMapData(row.cardName, "col3")}</TableCell>
                   <TableCell>
-                    {handleMapData(row.orderDescription, "col4")}
+                    {handleMapData(row.descriptionDetails, "col4")}
                   </TableCell>
-                  <TableCell>{handleMapData(row.value, "col5")}</TableCell>
-                  <TableCell>{handleMapData(row.date, "col6")}</TableCell>
+                  <TableCell>{handleMapData(row.amount, "col5")}</TableCell>
+                  <TableCell>
+                    {handleMapData(row.transactionDate, "col6")}
+                  </TableCell>
                   <TableCell>{handleMapData(row.status, "col7")}</TableCell>
                 </TableRow>
               ))}

@@ -24,6 +24,8 @@ export default async function UserManage(searchParams) {
 
   const getAllCard = await getAllCards();
 
+  console.log("all card", getAllCard.data);
+
   return (
     <div>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>

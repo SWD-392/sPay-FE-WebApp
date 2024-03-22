@@ -4,7 +4,7 @@ import axios from "axios";
 const BASE_URL = process.env.API_URL_LOCAL;
 
 const QUERY_ORDERS = {
-  GET_ORDERS: "/api/Order",
+  GET_ORDERS: "/api/v1/Transactions",
 };
 
 /**

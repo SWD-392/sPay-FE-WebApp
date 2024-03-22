@@ -9,9 +9,6 @@ export default async function OrderManage({ searchParams }) {
 
   const data = await getOrders(page ?? "1", per_page ?? "5");
 
-  console.log(data.data);
-  // const deleteStore = await deleteStore();
-
   return (
     <div>
       <h1> Quản lí giao dịch </h1>
