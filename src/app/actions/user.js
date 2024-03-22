@@ -25,3 +25,13 @@ export async function getUsers(pageIndex, pageSize, search) {
     return [];
   }
 }
+
+export async function createUser(data) {
+  try {
+    const res = await axios.post(`${BASE_URL}${QUERY_USERS.GET_USERS}`, data);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}

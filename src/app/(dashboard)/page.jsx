@@ -5,6 +5,7 @@ import CardInfo from "@/components/page-components/dashboard-components/card-inf
 import StoreIcon from "@public/icon/store.svg";
 import OrderIcon from "@public/icon/order.svg";
 import TotalIcon from "@public/icon/total.svg";
+import { useSession } from "next-auth/react";
 
 export default function Dashboard() {
   return (

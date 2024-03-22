@@ -157,7 +157,6 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions, cards }) => {
               <TableCell>Họ tên khách</TableCell>
               <TableCell>Số điện thoại</TableCell>
 
-              <TableCell>Tổng card</TableCell>
               <TableCell>Xem chi tiết</TableCell>
             </TableRow>
           </TableHead>
@@ -171,7 +170,6 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions, cards }) => {
                   <TableCell>
                     {handleMapData(row.phoneNumber, "col4")}
                   </TableCell>
-                  <TableCell>{handleMapData(row.totalCard, "col4")}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleRowClick(row)}>
                       <RemoveRedEye color="primary" />

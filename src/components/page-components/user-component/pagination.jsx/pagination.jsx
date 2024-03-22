@@ -1,6 +1,16 @@
 "use client";
 
-import { Box, CircularProgress, Pagination, Stack } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Pagination,
+  Stack,
+  TextField,
+} from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import UserTable from "../table";
 import {
@@ -9,6 +19,8 @@ import {
   useRouter,
   useSearchParams,
 } from "next/navigation";
+import { createUser } from "@/app/actions";
+import { toast } from "react-toastify";
 
 const PaginationComponentUser = ({
   users,
@@ -18,6 +30,29 @@ const PaginationComponentUser = ({
   cards,
 }) => {
   const [loading, setLoading] = useState(true); // add loading state
+  const [open, setOpen] = useState(false);
+
+  const openModal = () => {
+    setOpen(true);
+  };
+
+  const closeModal = () => {
+    setOpen(false);
+  };
+
+  const [form, setForm] = useState([]);
+
+  const handleAddUser = async () => {
+    const res = await createUser();
+
+    if (res) {
+      toast.success("Thêm người dùng thành công");
+      setOpen(false);
+    } else {
+      toast.error("Thêm người dùng thất bại");
+    }
+  };
+
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -61,8 +96,15 @@ const PaginationComponentUser = ({
     );
     // render loading message if loading is true
   }
+
   return (
     <div>
+      <Box>
+        <Button onClick={() => openModal()} color="primary">
+          {" "}
+          Thêm người dùng
+        </Button>
+      </Box>
       <UserTable
         data={users}
         cardTypes={cardTypes}
@@ -77,6 +119,52 @@ const PaginationComponentUser = ({
           onChange={(event, page) => handlePageChange(page)}
         />
       </Stack>
+
+      <Dialog open={open}>
+        <Box>
+          <h1>Thêm người dùng</h1>
+        </Box>
+        <DialogContent>
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            fullWidth
+            id="fullname"
+            label="Tên người dùng"
+            placeholder="Nhập tên người dùng"
+            type="text"
+            onChange={(e) => setForm({ ...form, fullname: e.target.value })}
+          />
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            fullWidth
+            id="phoneNumber"
+            label="Số điện thoại"
+            placeholder="Nhập số điện thoại"
+            type="number"
+            onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })}
+          />
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            fullWidth
+            id="fullname"
+            label="Mật khẩu"
+            placeholder="Nhập mật khẩu"
+            type="password"
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+          />
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={() => closeModal()}>Đóng</Button>
+          <Button onClick={() => handleAddUser()}>Thêm</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
