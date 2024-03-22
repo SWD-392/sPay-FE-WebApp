@@ -4,7 +4,7 @@ import React, { Suspense } from "react";
 import { getUsers } from "@/app/actions/user";
 import PaginationComponentUser from "@/components/page-components/user-component/pagination.jsx/pagination";
 import { getAllCardsType } from "@/app/actions/card-type";
-import { getStoreCategory } from "@/app/actions";
+import { getAllCards, getMemberships, getStoreCategory } from "@/app/actions";
 import { getPromotionForUser, getPromotions } from "@/app/actions/promotion";
 import Search from "@/components/nav-topbar/search/search";
 import { Box, CircularProgress } from "@mui/material";
@@ -20,6 +20,8 @@ export default async function UserManage(searchParams) {
 
   const cardTypes = await getAllCardsType();
   const promotions = (await getPromotionForUser()) || [];
+
+  const getAllCard = await getAllCards();
 
   return (
     <div>

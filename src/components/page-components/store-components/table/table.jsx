@@ -83,7 +83,6 @@ function TableView({ storeData, storeCategory }) {
     storeCategoryKey: "",
     ownerName: "",
     phoneNumber: "",
-    password: "",
     balance: 0,
   });
 
@@ -259,6 +258,22 @@ function TableView({ storeData, storeCategory }) {
               </TableCell>
               <TableCell>
                 <TableSortLabel
+                  active={sortConfig.key === "description"}
+                  direction={sortConfig.direction}
+                  onClick={() => requestSort("description")}
+                >
+                  Mô tả
+                  {sortConfig.key === "description" ? (
+                    sortConfig.direction === "ascending" ? (
+                      <ArrowDropUpSharpIcon />
+                    ) : (
+                      <ArrowDropDownSharpIcon />
+                    )
+                  ) : null}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
                   active={sortConfig.key === "storeCategory"}
                   direction={sortConfig.direction}
                   onClick={() => requestSort("storeCategory")}
@@ -301,10 +316,11 @@ function TableView({ storeData, storeCategory }) {
                 <TableCell>{handleMapData(row.storeName, "col1")}</TableCell>
                 <TableCell>{handleMapData(row.ownerName, "col2")}</TableCell>
                 <TableCell>{handleMapData(row.phoneNumber, "col3")}</TableCell>
+                <TableCell>{handleMapData(row.description, "col5")}</TableCell>
                 <TableCell>
-                  {handleMapData(row.storeCategory, "col4")}
+                  {handleMapData(row.storeCategoryName, "col6")}
                 </TableCell>
-                <TableCell>{handleMapData(row.balance, "col5")}</TableCell>
+                <TableCell>{handleMapData(row.balance, "col7")}</TableCell>
                 {/* edit */}
                 <TableCell>
                   <IconButton onClick={() => handleRowClick(row)}>
@@ -450,12 +466,12 @@ function TableView({ storeData, storeCategory }) {
               value={newStoreData.storeCategoryKey}
               onChange={handleAddInputChange}
             >
-              {categoriesIdMenu.map((category) => (
+              {storeCategory.map((category) => (
                 <MenuItem
                   key={category.storeCategoryKey}
                   value={category.storeCategoryKey}
                 >
-                  {category.storeCategoryName}
+                  {category.categoryName}
                 </MenuItem>
               ))}
             </TextField>
@@ -559,8 +575,8 @@ function TableView({ storeData, storeCategory }) {
               fullWidth
               value={
                 selectedData
-                  ? selectedData.storeCategoryKey
-                  : selectedData.storeCategoryName
+                  ? selectedData.categoryName
+                  : selectedData.storeCategoryKey
               }
               onChange={handleChangeCateValue}
             >
@@ -569,11 +585,11 @@ function TableView({ storeData, storeCategory }) {
                   key={category.storeCategoryKey}
                   value={category.storeCategoryKey}
                 >
-                  {category.storeCategoryName}
+                  {category.categoryName}
                 </MenuItem>
               ))}
             </TextField>
-            <TextField
+            {/* <TextField
               autoFocus
               required
               margin="dense"
@@ -590,7 +606,7 @@ function TableView({ storeData, storeCategory }) {
                   {status.description}
                 </MenuItem>
               ))}
-            </TextField>
+            </TextField> */}
           </DialogContent>
 
           <DialogActions>

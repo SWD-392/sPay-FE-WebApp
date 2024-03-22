@@ -121,7 +121,7 @@ const CardPromotion = ({ promotion }) => {
 
   useEffect(() => {
     const price =
-      data.valueUsed - (data.valueUsed * data.discountPercentage) / 100;
+      data.usaebleAmount - (data.usaebleAmount * data.discountPercentage) / 100;
     setData((prevState) => ({ ...prevState, price }));
   }, []);
 
@@ -133,10 +133,10 @@ const CardPromotion = ({ promotion }) => {
       [name]: value,
     };
 
-    if (name === "valueUsed" || name === "discountPercentage") {
+    if (name === "usaebleAmount" || name === "discountPercentage") {
       const price =
-        updatedData.valueUsed -
-        (updatedData.valueUsed * updatedData.discountPercentage) / 100;
+        updatedData.usaebleAmount -
+        (updatedData.usaebleAmount * updatedData.discountPercentage) / 100;
       updatedData = {
         ...updatedData,
         price,
@@ -147,14 +147,14 @@ const CardPromotion = ({ promotion }) => {
   };
 
   useEffect(() => {
-    const { valueUsed, discountPercentage } = data;
-    const price = valueUsed - (valueUsed * discountPercentage) / 100;
+    const { usaebleAmount, discountPercentage } = data;
+    const price = usaebleAmount - (usaebleAmount * discountPercentage) / 100;
 
     setData((prevState) => ({
       ...prevState,
       price,
     }));
-  }, [data.valueUsed, data.discountPercentage]);
+  }, [data.usaebleAmount, data.discountPercentage]);
 
   //update promotion package
   const handleEditPromotion = async (formJson, promotionPackageKey) => {
@@ -162,7 +162,7 @@ const CardPromotion = ({ promotion }) => {
       packageName: data.packageName,
       description: data.description,
       numberDate: data.numberDate,
-      valueUsed: data.valueUsed,
+      usaebleAmount: data.usaebleAmount,
       discountPercentage: data.discountPercentage,
       price: data.price,
       withdrawAllowed: data.withdrawAllowed,
@@ -209,7 +209,7 @@ const CardPromotion = ({ promotion }) => {
           </Typography>
 
           <Typography variant="body2">
-            Giá trị gói: {promotion.valueUsed} VND
+            Giá trị gói: {promotion.usaebleAmount} VND
           </Typography>
 
           <Typography variant="body2">
@@ -222,12 +222,17 @@ const CardPromotion = ({ promotion }) => {
         </CardContent>
         <Box style={{ display: "flex", justifyContent: "space-between" }}>
           <CardActions>
-            <Button size="small" onClick={() => handleEdit(data)}>
+            <Button
+              disabled={promotion.totalCardUse}
+              size="small"
+              onClick={() => handleEdit(data)}
+            >
               Tuỳ Chỉnh
             </Button>
           </CardActions>
           <CardActions>
             <Button
+              disabled={promotion.totalCardUse}
               color="error"
               size="small"
               onClick={() => handleDelete(promotion.promotionPackageKey)}
@@ -264,7 +269,7 @@ const CardPromotion = ({ promotion }) => {
               return;
             }
 
-            if (!formJson.valueUsed) {
+            if (!formJson.usaebleAmount) {
               notify("Vui lòng chọn giá trị gói");
               return;
             }
@@ -330,14 +335,14 @@ const CardPromotion = ({ promotion }) => {
             autoFocus
             required
             margin="dense"
-            id="valueUsed"
-            name="valueUsed"
+            id="usaebleAmount"
+            name="usaebleAmount"
             label="Giá trị gói"
             type="number"
             fullWidth
             select
             variant="standard"
-            value={data.valueUsed}
+            value={data.usaebleAmount}
             onChange={handleEditInputChange}
           >
             {moneyValueMapping.map((item) => (

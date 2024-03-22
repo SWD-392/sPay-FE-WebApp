@@ -23,7 +23,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import React, { useEffect, useState } from "react";
 import styles from "./table.module.css";
-import { getCardTypeID, getCardsTypeByStoreCate } from "@/app/actions";
+import {
+  createMemberships,
+  getCardTypeID,
+  getCardsTypeByStoreCate,
+  getMemberShipById,
+} from "@/app/actions";
 import CardUser from "./card/card";
 import { toast } from "react-toastify";
 import NotInterestedIcon from "@mui/icons-material/NotInterested";
@@ -35,6 +40,7 @@ import CardAvailable from "./card/card-available";
 const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
   const [open, setOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
+  const [membership, setMembership] = useState({ items: [] });
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -42,13 +48,28 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
   const handleOpenAddCard = () => setOpenAddCard(true);
   const handleCloseAddCard = () => setOpenAddCard(false);
 
-  const handleRowClick = (row) => {
+  const handleRowClick = async (row) => {
     setSelectedData(row); // Store the selected row data
     setOpen(true); // Open the ButtonAdd component
-    console.log(selectedData);
+    const membershipData = await getMemberShipById(row.userKey);
+    setMembership(membershipData.data);
   };
+
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const handleConfirmOpen = () => setConfirmOpen(true);
+  const handleConfirmOpen = async (userKey, cardKey) => {
+    setConfirmOpen(true);
+    const data = { userKey, cardKey };
+
+    console.log(data);
+
+    // const res = await createMemberships(data);
+
+    // if (res.data) {
+    //   toast.success("Thêm gói thành công");
+    // } else {
+    //   toast.error("Thêm gói thất bại");
+    // }
+  };
 
   const statusMenu = [
     {
@@ -104,14 +125,10 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
 
   const handleStoreTypeChange = async (event) => {
     const storeCategoryId = event.target.value;
-    console.log(storeCategoryId);
     const cardTypesData = await getCardsTypeByStoreCate(storeCategoryId);
-    console.log(cardTypesData.data.items);
     setCardTypesSelect(cardTypesData.data.items);
     setIsCardTypeDisabled(false);
   };
-
-  console.log("promotions", promotions.items);
 
   const notifySuccess = (message) => {
     toast.success(message, {
@@ -144,7 +161,7 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
           <TableBody>
             {data.items &&
               data.items.map((row) => (
-                <TableRow key={row.customerKey}>
+                <TableRow key={row.userKey}>
                   {/* Use map to display data in cells */}
                   <TableCell>{handleMapData(row.no, "col0")}</TableCell>
                   <TableCell>{handleMapData(row.fullname, "col1")}</TableCell>
@@ -198,11 +215,11 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
             useFlexGap
             flexWrap="wrap"
           >
-            {promotions &&
-              promotions.items.map((index) => {
+            {membership &&
+              membership.items.map((index) => {
                 return (
                   <CardUser
-                    key={index.cardKey}
+                    key={index.membershipKey}
                     data={index}
                     onChoose={handleConfirmOpen}
                   />
@@ -252,58 +269,6 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
       >
         <DialogTitle>Thêm gói khuyến mãi cho người dùng</DialogTitle>
         <DialogContent>
-          {/* call storeCategory để hiển thị cho người dùng chọn
-           */}
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="storeKey"
-            name="storeKey"
-            label="Loại cửa hàng"
-            type="text"
-            fullWidth
-            variant="standard"
-            // value={selectedData ? selectedData.customerName : ""}
-            select
-            onChange={handleStoreTypeChange}
-            //  chỗ này hiển thị các giá trị của storecate
-          >
-            {storeTypes &&
-              storeTypes.items.map((index) => (
-                <MenuItem
-                  key={index.storeCategoryKey}
-                  value={index.storeCategoryKey}
-                >
-                  {index.categoryName}
-                </MenuItem>
-              ))}
-          </TextField>
-
-          {/* đoạn này hiển thị cardtype để chọn */}
-
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="cardTypeKey"
-            name="cardTypeKey"
-            label="cardTypeName"
-            type="text"
-            fullWidth
-            variant="standard"
-            // value={selectedData ? selectedData.lastName : ""}
-            select
-            disabled={isCardTypeDisabled}
-            // chỗ này hiển thị các giá trị của cardtype
-          >
-            {cardTypesSelect &&
-              cardTypesSelect.map((index) => (
-                <MenuItem key={index.cardTypeKey} value={index.cardTypeKey}>
-                  {index.cardTypeName}
-                </MenuItem>
-              ))}
-          </TextField>
           <Stack
             style={{ marginTop: "20px" }}
             spacing={{ xs: 1, sm: 2 }}
@@ -311,11 +276,11 @@ const UserTable = ({ data, storeTypes, cardTypes, promotions }) => {
             useFlexGap
             flexWrap="wrap"
           >
-            {promotions &&
-              promotions.items.map((index) => {
+            {memberships &&
+              memberships.items.map((index) => {
                 return (
                   <CardAvailable
-                    key={index.cardKey}
+                    key={index.membershipKey}
                     data={index}
                     onChoose={handleConfirmOpen}
                   />

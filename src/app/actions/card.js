@@ -27,6 +27,19 @@ export async function getCards(pageIndex, pageSize) {
   }
 }
 
+export async function getAllCards() {
+  try {
+    const res = await axios.get(`${BASE_URL}${QUERY_CARD.GET_CARDS}`);
+
+    const data = res.data.data;
+
+    return { data: data };
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+
 export async function getCard(id) {
   try {
     const res = await axios.get(`${BASE_URL}${QUERY_CARD.GET_CARDS}/${id}`);

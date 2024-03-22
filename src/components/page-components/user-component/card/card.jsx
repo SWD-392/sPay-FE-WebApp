@@ -13,25 +13,29 @@ const CardUser = ({ data, onChoose }) => {
       <Card sx={{ minWidth: 250, maxWidth: 250, minHeight: 250 }}>
         <CardContent>
           <Typography sx={{ fontSize: 20 }} color="text.primary" gutterBottom>
-            {data.cardTypeName}
+            {data.cardName}
           </Typography>
-
+          <Typography variant="body2">Loại thẻ: {data.cardTypeName}</Typography>
           <Typography variant="body2">
             Thời hạn: {data.dateNumber} ngày
           </Typography>
           <Typography variant="body2">
-            Chi tiết gói khuyến mãi: {data.description}
+            Chi tiết gói khuyến mãi: {data.cardDescription}
           </Typography>
-          <Typography variant="body2">Giá bán gói: {data.price} VND</Typography>
+          <Typography variant="body2">
+            Loại cửa hàng: {data.storeCateName}
+          </Typography>
+          <Typography variant="body2">Số dư: {data.balance} VND</Typography>
 
           <Typography variant="body2">
-            Số tiền khách dùng: {data.moneyValue} VND
+            Giá trị gói: {data.usaebleAmount} VND
           </Typography>
 
           <Typography variant="body2">
-            Phần trăm khuyến mãi: {data.discountPercentage}%
+            Rút tiền: {data.withdrawAllowed ? "Có" : "Không"}
           </Typography>
-          <Typography variant="body2">Loại thẻ: {data.cardTypeName}</Typography>
+
+          <Typography variant="body2">Hết hạn: {data.expiredDate}</Typography>
         </CardContent>
         {/* <CardActions>
           <Button size="small" onClick={onChoose}>

@@ -80,7 +80,7 @@ const PromotionCompo = ({ promotions }) => {
   const [newPromotionData, setNewPromotionData] = useState({
     packageName: "",
     description: "",
-    valueUsed: 0,
+    usaebleAmount: 0,
     discountPercentage: 0,
     price: 0,
     numberDate: 0,
@@ -101,7 +101,7 @@ const PromotionCompo = ({ promotions }) => {
       [name]: parsedValue,
     });
 
-    if (name === "valueUsed" || name === "discountPercentage") {
+    if (name === "usaebleAmount" || name === "discountPercentage") {
       setInputsChanged(true);
     }
   };
@@ -130,8 +130,8 @@ const PromotionCompo = ({ promotions }) => {
 
   useEffect(() => {
     if (open && inputsChanged) {
-      const { valueUsed, discountPercentage } = newPromotionData;
-      const price = valueUsed - (valueUsed * discountPercentage) / 100;
+      const { usaebleAmount, discountPercentage } = newPromotionData;
+      const price = usaebleAmount - (usaebleAmount * discountPercentage) / 100;
 
       setNewPromotionData((prevState) => ({
         ...prevState,
@@ -150,7 +150,7 @@ const PromotionCompo = ({ promotions }) => {
       packageName: newPromotionData.packageName,
       description: newPromotionData.description,
       numberDate: newPromotionData.numberDate,
-      valueUsed: newPromotionData.valueUsed,
+      usaebleAmount: newPromotionData.usaebleAmount,
       discountPercentage: newPromotionData.discountPercentage,
       price: newPromotionData.price,
       withdrawAllowed: newPromotionData.withdrawAllowed,
@@ -209,7 +209,7 @@ const PromotionCompo = ({ promotions }) => {
               return;
             }
 
-            if (!formJson.valueUsed) {
+            if (!formJson.usaebleAmount) {
               toast.error("Vui lòng chọn giá trị gói");
               return;
             }
@@ -317,8 +317,8 @@ const PromotionCompo = ({ promotions }) => {
             autoFocus
             required
             margin="dense"
-            id="valueUsed"
-            name="valueUsed"
+            id="usaebleAmount"
+            name="usaebleAmount"
             label="Giá trị gói"
             fullWidth
             select
@@ -406,9 +406,7 @@ const PromotionCompo = ({ promotions }) => {
 
         <DialogActions>
           <Button onClick={handleClose}>Hủy</Button>
-          <Button type="submit" onClick={handleAddPromotion}>
-            Thêm gói
-          </Button>
+          <Button type="submit">Thêm gói</Button>
         </DialogActions>
       </Dialog>
     </div>

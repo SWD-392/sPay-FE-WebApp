@@ -17,10 +17,10 @@ const QUERY_STORE = {
 /**
  * Get the store
  */
-export async function getStore(pageIndex, pageSize) {
+export async function getStore(pageIndex, pageSize, search) {
   try {
     const res = await axios.get(
-      `${BASE_URL}${QUERY_STORE.GET_STORES}?PageIndex=${pageIndex}&PageSize=${pageSize}`
+      `${BASE_URL}${QUERY_STORE.GET_STORES}?StoreName=${search}&PageIndex=${pageIndex}&PageSize=${pageSize}`
     );
 
     const data = res.data.data;

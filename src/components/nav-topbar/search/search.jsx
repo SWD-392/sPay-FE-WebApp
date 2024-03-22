@@ -5,7 +5,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-const Search = ({ users }) => {
+const Search = () => {
   const [input, setInput] = useState("");
   const handleInputChange = (e) => {
     setInput(e.target.value);
