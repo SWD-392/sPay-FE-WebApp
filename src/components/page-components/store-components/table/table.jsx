@@ -203,13 +203,13 @@ function TableView({ storeData, storeCategory }) {
   const [userKey, setUserKey] = useState("");
   const [balance, setBalance] = useState(0);
   const handleWithdraw = (row) => {
+    setUserKey(row.userKey);
     setBalance(row.balance);
     if (row.balance === 0) {
       toast.error("Số dữ không khả dụng");
       return;
     }
-    setUserKey(row.userKey);
-    setWithdrawData({ userKey, totalAmount: 0 });
+    setWithdrawData({ userKey: row.userKey, totalAmount: 0 });
     setOpenWithdraw(true);
   };
 

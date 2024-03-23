@@ -1,3 +1,4 @@
+import { getStoreCategory } from "@/app/actions";
 import { getCardsType } from "@/app/actions/card-type";
 import CardTypePagination from "@/components/page-components/cardtype-component/pagination/pagination";
 import { Box, CircularProgress } from "@mui/material";
@@ -7,8 +8,7 @@ export default async function CardType({ searchParams }) {
   const page = searchParams.page;
   const perpage = searchParams.per_page;
   const cardTypes = await getCardsType(page ?? "1", perpage ?? "6");
-
-  //   cardTypes={cardTypes.data}
+  const storeCategory = await getStoreCategory();
 
   return (
     <div>
@@ -27,7 +27,10 @@ export default async function CardType({ searchParams }) {
           </Box>
         }
       >
-        <CardTypePagination cardTypes={cardTypes.data} />
+        <CardTypePagination
+          cardTypes={cardTypes.data}
+          storeCategory={storeCategory.data}
+        />
       </Suspense>
     </div>
   );

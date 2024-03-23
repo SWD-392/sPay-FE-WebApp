@@ -10,9 +10,11 @@ const QUERY_ORDERS = {
 /**
  * Get orders
  */
-export async function getOrders() {
+export async function getOrders(page, perpage) {
   try {
-    const res = await axios.get(`${BASE_URL}${QUERY_ORDERS.GET_ORDERS}`);
+    const res = await axios.get(
+      `${BASE_URL}${QUERY_ORDERS.GET_ORDERS}?PageIndex=${page}&PageSize=${perpage}`
+    );
 
     const data = res.data.data;
 
