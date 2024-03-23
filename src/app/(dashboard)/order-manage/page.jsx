@@ -4,10 +4,10 @@ import { Box, CircularProgress } from "@mui/material";
 import { Suspense } from "react";
 
 export default async function OrderManage({ searchParams }) {
-  const page = searchParams.page;
-  const per_page = searchParams.per_page;
+  const page = searchParams.page ?? "1";
+  const per_page = searchParams.per_page ?? "5";
 
-  const data = await getOrders(page ?? "1", per_page ?? "5");
+  const data = await getOrders(page, per_page);
 
   return (
     <div>
