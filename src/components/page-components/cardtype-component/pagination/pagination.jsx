@@ -5,7 +5,7 @@ import CardTypeTable from "../table/table";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Box, CircularProgress, Pagination, Stack } from "@mui/material";
 
-const CardTypePagination = ({ cardTypes }) => {
+const CardTypePagination = ({ cardTypes, storeCategory }) => {
   const [loading, setLoading] = useState(true); // add loading state
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -51,7 +51,10 @@ const CardTypePagination = ({ cardTypes }) => {
   }
   return (
     <div>
-      <CardTypeTable cardTypes={cardTypes.items} />
+      <CardTypeTable
+        cardTypes={cardTypes.items}
+        storeCategory={storeCategory}
+      />
       <Stack
         spacing={2}
         style={{

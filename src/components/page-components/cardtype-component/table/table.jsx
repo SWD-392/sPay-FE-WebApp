@@ -25,10 +25,11 @@ import ArrowDropDownSharpIcon from "@mui/icons-material/ArrowDropDownSharp";
 import { toast } from "react-toastify";
 import { createCardType, deleteCardType, updateCardType } from "@/app/actions";
 
-const CardTypeTable = ({ cardTypes }) => {
+const CardTypeTable = ({ cardTypes, storeCategory }) => {
   const [data, setData] = useState(cardTypes);
   const [open, setOpen] = useState(false);
   const [selectedData, setSelectedData] = useState({});
+  const [storeCategoryData, setStoreCategoryData] = useState(storeCategory);
 
   const [sortConfig, setSortConfig] = useState({
     key: null,
@@ -240,6 +241,11 @@ const CardTypeTable = ({ cardTypes }) => {
                 toast.warn("Vui lòng nhập mô tả loại card");
                 return;
               }
+
+              if (!formJson.storeCateKey) {
+                toast.warn("Vui lòng chọn loại cửa hàng");
+                return;
+              }
               handleAddCardType(formJson);
               handleClose();
             },
@@ -273,6 +279,32 @@ const CardTypeTable = ({ cardTypes }) => {
               // value={newStoreData.description}
               // onChange={handleAddInputChange}
             />
+
+            <TextField
+              autoFocus
+              required
+              margin="dense"
+              id="storeCateKey"
+              name="storeCateKey"
+              label="Loại cửa hàng áp dụng"
+              type="text"
+              fullWidth
+              variant="standard"
+              select
+
+              // value={newStoreData.description}
+              // onChange={handleAddInputChange}
+            >
+              {storeCategory &&
+                storeCategory.items.map((option) => (
+                  <MenuItem
+                    key={option.storeCategoryKey}
+                    value={option.storeCategoryKey}
+                  >
+                    {option.categoryName}
+                  </MenuItem>
+                ))}
+            </TextField>
           </DialogContent>
 
           <DialogActions>
@@ -296,6 +328,10 @@ const CardTypeTable = ({ cardTypes }) => {
               }
 
               if (!formJson.description) {
+                toast.warn("Vui lòng nhập mô tả loại card");
+                return;
+              }
+              if (!formJson.storeCateKey) {
                 toast.warn("Vui lòng nhập mô tả loại card");
                 return;
               }
@@ -336,6 +372,32 @@ const CardTypeTable = ({ cardTypes }) => {
                 onChangeSelectedData("description", event.target.value)
               }
             />
+            <TextField
+              autoFocus
+              required
+              margin="dense"
+              id="storeCateKey"
+              name=""
+              label="Loại cửa hàng áp dụng"
+              type="text"
+              fullWidth
+              variant="standard"
+              select
+              value={selectedData.storeCateKey}
+              onChange={(event) =>
+                onChangeSelectedData("storeCateKey", event.target.value)
+              }
+            >
+              {storeCategory &&
+                storeCategory.items.map((option) => (
+                  <MenuItem
+                    key={option.storeCategoryKey}
+                    value={option.storeCategoryKey}
+                  >
+                    {option.categoryName}
+                  </MenuItem>
+                ))}
+            </TextField>
           </DialogContent>
 
           <DialogActions>
